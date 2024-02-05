@@ -1,14 +1,17 @@
 {
     "name": "reddit-clone/server",
     "require": {
-        "phpmailer/phpmailer": "^6.9"
+        "phpmailer/phpmailer": "^6.9",
+        "firebase/php-jwt": "^6.10",
+        "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.8"
+        "squizlabs/php_codesniffer": "^3.8",
+        "vimeo/psalm": "^5.21"
     },
     "autoload": {
         "psr-4": {
-            "RedditClone\\Server\\": "src/"
+            "App\\": "app/"
         }
     },
     "authors": [
