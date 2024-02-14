@@ -8,13 +8,13 @@ header('Content-Type: application/json');
 $URI = explode('/', $_SERVER['REQUEST_URI']);
 $URI_PART = $URI[1];
 switch ($URI_PART) {
-    case 'user':
+    case 'users':
         require_once $routes . 'user.php';
         break;
     case 'auth':
         require_once $routes . 'auth.php';
         break;
-    case 'post':
+    case 'posts':
         require_once $routes . 'post.php';
         break;
     default:
