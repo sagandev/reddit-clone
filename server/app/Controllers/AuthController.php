@@ -24,19 +24,19 @@ class AuthController
 
         switch ($method) {
             case 'POST':
-                if (empty($data['username']) || empty($data['password'])){
+                if (empty($data['email']) || empty($data['password'])){
                     Response::send(400, 'You must provide all data');
                     exit;
                 }
 
-                $user = $this->user->login($data['username'], $data['password']);
+                $user = $this->user->login($data['email'], $data['password']);
 
                 if (!$user) {
-                    Response::send(401, 'Invalid username or password');
+                    Response::send(401, 'Invalid email or password');
                     exit;
                 }
                 $token = $this->auth->createToken(['email' => $data['email']]);
-                Response::send(200, 'Successfully logged in', ['token' => $token]);
+                Response::send(200, 'Successfully logged in', ['token' => $token, 'user' => $user]);
                 break;
             default:
                 Response::send(405, 'error');

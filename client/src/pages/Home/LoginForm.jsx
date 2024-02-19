@@ -1,6 +1,7 @@
 import { TextInput, Checkbox, Button, Group, Box, PasswordInput, Anchor } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
+import $ from 'jquery';
 export default function LoginForm() {
     const form = useForm({
       initialValues: {

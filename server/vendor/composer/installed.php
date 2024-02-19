@@ -3,7 +3,7 @@
         'name' => 'reddit-clone/server',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '70b0e5a1f820658cda6658f5dc4440dfdb78ec3e',
+        'reference' => '37419c2f6c93c8a8b6f27086f00a282170079a12',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -331,7 +331,7 @@
         'reddit-clone/server' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '70b0e5a1f820658cda6658f5dc4440dfdb78ec3e',
+            'reference' => '37419c2f6c93c8a8b6f27086f00a282170079a12',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

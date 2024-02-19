@@ -10,19 +10,17 @@ use App\Helper\DataFormatter;
 
 class Post
 {
-    public $df;
     public $db;
 
     public function __construct()
     {
-        $this->df = new DataFormatter();
         $this->db = new Database();
     }
 
-    public function getTasks($userId)
+    public function getPosts(string $orderType)
     {
         try {
-            $this->db->prepare("SELECT *, 'today_tasks_list' AS list_name FROM today_tasks_list WHERE user_id = :userId UNION ALL SELECT *, 'tommorow_tasks_list' AS list_name FROM tommorow_tasks_list WHERE user_id = :userId", [":userId" => $userId]);
+            $this->db->prepare("SELECT title, content, upvotes, downvotes, posts.created_at, username AS author, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id ORDER BY :orderType LIMIT 100;", ['orderType' => $orderType]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -33,7 +31,12 @@ class Post
         }
 
         $data = $this->db->fetchAll();
-        return json_encode($data);
+
+        foreach ($data as &$post) {
+            $post['timestamp'] = DataFormatter::timestamp($post['created_at']);
+        }
+
+        return $data;
     }
     public function addTask(string $list, string $taskContent, string $userId): bool
     {

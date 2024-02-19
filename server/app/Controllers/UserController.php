@@ -39,7 +39,7 @@ class UserController
                     Response::send(400, 'User already exists');
                     exit;
                 }
-                Response::send(200, 'User registered successfully', $user);
+                Response::send(200, 'User registered successfully');
                 break;
 
                 case 'GET':
