@@ -25,7 +25,7 @@ class UserController
         switch ($method) {
             case 'POST':
                 if (empty($data['email']) || empty($data['password']) || empty($data['username'])) {
-                    Response::send(400, 'You must provide all data');
+                    Response::send(400, 'Missing parameters');
                     exit;
                 }
 
@@ -43,15 +43,15 @@ class UserController
                 break;
 
                 case 'GET':
-                    $params = Request::getParams();
+                    $params = Request::getURI();
                     // 2 = Username index in params array
-                    if(is_null($params[2])) {
+                    if(is_null($params['path'][2])) {
                         Response::send(400, 'Missing parameters');
                         exit;
                     }
 
                     // 2 = Username index in params array
-                    $user = $this->user->getUser($params[2]);
+                    $user = $this->user->getUser($params['path'][2]);
 
                     if (!$user) {
                         Response::send(404, 'Not found');

@@ -24,7 +24,6 @@ class User
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
-            exit;
         }
 
         if ($this->db->numRows() != 1) {
@@ -53,7 +52,6 @@ class User
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
-            exit;
         }
 
         if ($this->db->numRows() === 1) {
@@ -67,7 +65,6 @@ class User
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
-            exit;
         }
 
         return true;
@@ -82,7 +79,6 @@ class User
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
-            exit;
         }
 
         $user = $this->db->fetchAssoc();
@@ -110,7 +106,6 @@ class User
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
-            exit;
         }
 
         $res = $this->db->fetchAll();

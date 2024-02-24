@@ -31,11 +31,13 @@ use Psalm\Internal\Type\TemplateResult;
 use Psalm\Internal\Type\TemplateStandinTypeReplacer;
 use Psalm\Internal\Type\TypeExpander;
 use Psalm\Issue\InvalidDocblockParamName;
+use Psalm\Issue\InvalidOverride;
 use Psalm\Issue\InvalidParamDefault;
 use Psalm\Issue\InvalidThrow;
 use Psalm\Issue\MethodSignatureMismatch;
 use Psalm\Issue\MismatchingDocblockParamType;
 use Psalm\Issue\MissingClosureParamType;
+use Psalm\Issue\MissingOverrideAttribute;
 use Psalm\Issue\MissingParamType;
 use Psalm\Issue\MissingThrowsDocblock;
 use Psalm\Issue\ReferenceConstraintViolation;
@@ -48,6 +50,7 @@ use Psalm\IssueBuffer;
 use Psalm\Node\Expr\VirtualVariable;
 use Psalm\Node\Stmt\VirtualWhile;
 use Psalm\Plugin\EventHandler\Event\AfterFunctionLikeAnalysisEvent;
+use Psalm\Storage\AttributeStorage;
 use Psalm\Storage\ClassLikeStorage;
 use Psalm\Storage\FunctionLikeParameter;
 use Psalm\Storage\FunctionLikeStorage;
@@ -65,6 +68,7 @@ use UnexpectedValueException;
 
 use function array_combine;
 use function array_diff_key;
+use function array_filter;
 use function array_key_exists;
 use function array_keys;
 use function array_merge;
@@ -1969,6 +1973,39 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                 null,
                 true,
             );
+
+            if ($codebase->analysis_php_version_id >= 8_03_00) {
+                $has_override_attribute = array_filter(
+                    $storage->attributes,
+                    static fn(AttributeStorage $s): bool => $s->fq_class_name === 'Override',
+                );
+
+                if ($has_override_attribute
+                    && (!$overridden_method_ids || $storage->cased_name === '__construct')
+                ) {
+                    IssueBuffer::maybeAdd(
+                        new InvalidOverride(
+                            'Method ' . $storage->cased_name . ' does not match any parent method',
+                            $codeLocation,
+                        ),
+                        $this->getSuppressedIssues(),
+                    );
+                }
+
+                if (!$has_override_attribute
+                    && $codebase->config->ensure_override_attribute
+                    && $overridden_method_ids
+                    && $storage->cased_name !== '__construct'
+                ) {
+                    IssueBuffer::maybeAdd(
+                        new MissingOverrideAttribute(
+                            'Method ' . $storage->cased_name . ' should have the "Override" attribute',
+                            $codeLocation,
+                        ),
+                        $this->getSuppressedIssues(),
+                    );
+                }
+            }
 
             if ($overridden_method_ids
                 && !$context->collect_initializations

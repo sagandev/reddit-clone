@@ -50,7 +50,7 @@ class Database
         if (!empty($params)) {
             foreach ($params as $param => $value) {
                 if (str_contains($query, $param)) {
-                    $this->query->bindValue($param, $value);
+                    $this->query->bindValue($param, $value, PDO::PARAM_STR);
                 }
             }
         }

@@ -2,16 +2,12 @@ import $ from 'jquery';
 import { useEffect, useState } from "react";
 import {
   AppShell,
-  Burger,
   Group,
-  Skeleton,
   Modal,
   Button,
-  Checkbox,
-  ScrollArea,
   Autocomplete,
   rem,
-  Menu, Text, Box, Flex, Paper, Grid, Container, Stack, Avatar, Chip, Card, Anchor, Divider, SegmentedControl, Center
+  Menu, Text, Box, Flex, Grid, Container, Stack, Avatar, SegmentedControl, Center, Loader
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MantineLogo } from "@mantinex/mantine-logo";
@@ -32,9 +28,10 @@ export default function HomePage() {
   useEffect(() => {
     $.ajax({
       method: "GET",
-      url: "http://localhost:3000/posts"
+      url: "http://localhost:3000/posts?sort=created_at"
     }).done((data) => {
       setPosts(data.data);
+      console.log(data)
     })
   }, [])
 
@@ -162,11 +159,9 @@ export default function HomePage() {
                     },
                   ]}
                 />
-                <PostBox post={'test'} />
-                <PostBox post={'test'} />
-                <PostBox post={'test'} />
-                <PostBox post={'test'} />
-                <PostBox post={'test'} />
+                {
+                  posts.length > 0 ? posts.map((el, i) => {return <PostBox post={el} key={i}/>}) : <Loader color="blue" type="dots" />
+                }
               </Grid.Col>
               <Grid.Col span={3} visibleFrom="md">
                 <Flex ml="sm" direction="column" gap="sm" p="lg" style={{ backgroundColor: "var(--mantine-color-gray-0)", borderRadius: "var(--mantine-radius-lg)" }}>

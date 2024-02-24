@@ -1,12 +1,13 @@
 <?php
 $routes = __DIR__ . '/api/';
-header("Access-Control-Allow-Origin: http://localhost");
+header("Access-Control-Allow-Origin: http://localhost:5173");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: GET, POST, DELETE');
 header('Content-Type: application/json');
 
 $URI = explode('/', $_SERVER['REQUEST_URI']);
-$URI_PART = $URI[1];
+$enpoint = explode('?', $URI[1]);
+$URI_PART = $enpoint[0];
 switch ($URI_PART) {
     case 'users':
         require_once $routes . 'user.php';

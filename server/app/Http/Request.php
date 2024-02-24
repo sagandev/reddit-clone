@@ -23,27 +23,28 @@ class Request
         return $method;
     }
 
-    public static function getParams()
+    public static function getURI()
     {
         $URI = $_SERVER['REQUEST_URI'];
-        if (!$URI) {
-            return null;
-        }
-
-        $URI_PARAMS = explode('/', $URI);
-
-        return $URI_PARAMS;
+        $query = parse_url($URI, PHP_URL_QUERY);
+        $path = parse_url($URI, PHP_URL_PATH);
+        parse_str($query, $outputQuery);
+        $array = [
+            'path' => explode('/', $path),
+            'query' => $outputQuery
+        ];
+        return $array;
     }
 
     public static function getAuthToken()
     {
         if (empty($_SERVER['HTTP_AUTHORIZATION'])) {
-            Response::send(400, 'Bad Request - Authorization');
+            Response::send(401, 'Missing Authentication. Access not granted');
             exit; 
         }
         $authHeader = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
         if (empty($authHeader[1]) || $authHeader[0] !== 'Bearer') {
-            Response::send(400, 'Bad Request - Authorization');
+            Response::send(400, 'Missing Authentication. Access not granted');
             exit;
         }
         $authToken = $authHeader[1];

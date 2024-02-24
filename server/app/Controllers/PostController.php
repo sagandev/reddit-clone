@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Http\Request;
 use App\Http\Response;
 use App\Models\Post;
+use App\Http\Auth;
 class PostController
 {
     public $post;
@@ -21,13 +22,32 @@ class PostController
 
         switch ($method) {
             case 'GET':
-                $params = Request::getParams();
+                $params = Request::getURI();
                 // 2 = PostId index in params array
-                if(!array_key_exists(2, $params)) {
-                    $sort = $data['sort'] ?? "upvotes";
+                if(!array_key_exists(2, $params['path'])) {
+                    $sort = $params['query']['sort'] ?? "upvotes";
                     $posts = $this->post->getPosts($sort);
                     Response::send(200, 'success', $posts);
+                } else {
+                    $post = $this->post->getPost($params['path'][2]);
+                    Response::send(200, 'success', $post);
                 }
+                break;
+            case 'POST':
+
+                if(!Auth::verify()) {
+                    Response::send(401, 'Missing authentication. Access not granted');
+                    exit;
+                }
+
+                if (empty($data['title']) || empty($data['content']) || !is_bool($data['nsfw']) || empty($data['community_id'])) {
+                    Response::send(400, 'Missing parameters', $data);
+                    exit;
+                }
+
+                $user = Auth::decode();
+
+                Response::send(200, 'success', $user);
                 break;
             default:
                 Response::send(405, 'error');

@@ -41,23 +41,15 @@ class Auth
         return $decoded;
     }
 
-    public static function verify(string $token)
+    public static function verify()
     {
         try {
-            $decoded = JWT::decode($token, new Key($_ENV["JWT_KEY"], 'HS256'));
-        } catch (InvalidArgumentException $e) {
-            throw new Exception("provided key/key-array is empty or malformed");
-        } catch (DomainException $e) {
-            throw new Exception('Invalid auth key');
-        } catch (SignatureInvalidException $e) {
-            throw new Exception('Invalid auth key signature');
-        } catch (BeforeValidException $e) {
-            throw new Exception('Auth key is not valid yet');
-        } catch (ExpiredException $e) {
-            throw new Exception('Auth token is expired');
-        } catch (UnexpectedValueException $e) {
-            throw new Exception('Invalid auth key: '. $e->getMessage());
-        }
+            $decoded = self::decode();
+        } catch (Exception $e) {
+            return false;
+        } 
+
+        return true;
     }
 
     public static function has(string $role) : bool
