@@ -25,7 +25,7 @@ class AuthController
         switch ($method) {
             case 'POST':
                 if (empty($data['email']) || empty($data['password'])){
-                    Response::send(400, 'Missing parameters');
+                    Response::send(200, 'Missing parameters', $data);
                     exit;
                 }
 

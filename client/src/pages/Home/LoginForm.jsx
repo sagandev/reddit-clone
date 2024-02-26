@@ -1,8 +1,12 @@
-import { TextInput, Checkbox, Button, Group, Box, PasswordInput, Anchor } from '@mantine/core';
+import {useState} from 'react';
+import { TextInput, Checkbox, Button, Group, Box, PasswordInput, Anchor, Alert } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import $ from 'jquery';
-export default function LoginForm() {
+import { notifications } from '@mantine/notifications';
+import { IconX, IconChecks } from '@tabler/icons-react';
+export default function LoginForm({toggleLogin, openedLogin}) {
+  const [showAlert, setShowAlert] = useState(false);
     const form = useForm({
       initialValues: {
         email: '',
@@ -15,9 +19,44 @@ export default function LoginForm() {
       },
     });
   
+    function handleSubmit(values) {
+      console.log(values)
+      if (localStorage.getItem('auth')){
+        notifications.show({
+          title: "Login failed",
+          message: "You are already logged in",
+          color: 'red',
+          icon: <IconX />
+        })
+        toggleLogin(!openedLogin);
+        return;
+      }
+      $.ajax({
+        method: "POST",
+        url: "http://localhost:3000/auth",
+        data: JSON.stringify(values)
+      }).done((res) => {
+        localStorage.setItem("auth", res.data.token);
+        notifications.show({
+          title: "Login successfully",
+          message: "Welcome back!",
+          color: 'green',
+          icon: <IconChecks />
+        })
+        toggleLogin(!openedLogin);
+      }).fail((res) => {
+        notifications.show({
+          title: "Login failed",
+          message: "Invalid email or password",
+          color: 'red',
+          icon: <IconX />
+        })
+      })
+    }
+
     return (
       <Box mx="auto">
-        <form onSubmit={form.onSubmit((values) => console.log(values))}>
+        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
           <TextInput
             withAsterisk
             label="Email"

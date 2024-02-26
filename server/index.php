@@ -1,6 +1,6 @@
 <?php
 $routes = __DIR__ . '/api/';
-header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: http://127.0.0.1:5173");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: GET, POST, DELETE');
 header('Content-Type: application/json');
@@ -17,6 +17,9 @@ switch ($URI_PART) {
         break;
     case 'posts':
         require_once $routes . 'post.php';
+        break;
+    case 'communities':
+        require_once $routes . 'community.php';
         break;
     default:
         http_response_code(404);

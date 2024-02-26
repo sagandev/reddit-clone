@@ -20,7 +20,7 @@ class Post
     public function getPosts(string $orderType)
     {
         try {
-            $this->db->prepare("SELECT title, content, upvotes, downvotes, posts.created_at, username AS author, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id ORDER BY $orderType DESC LIMIT 100;");
+            $this->db->prepare("SELECT posts.id, title, content, upvotes, downvotes, posts.created_at, username AS author, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id ORDER BY $orderType DESC LIMIT 100;");
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -47,7 +47,7 @@ class Post
         ];
 
         try {
-            $this->db->prepare("SELECT title, content, upvotes, downvotes, posts.created_at, username AS author, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id WHERE posts.id = :postId", [':postId' => $postId]);
+            $this->db->prepare("SELECT id, title, content, upvotes, downvotes, posts.created_at, username AS author, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id WHERE posts.id = :postId", [':postId' => $postId]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -86,6 +86,7 @@ class Post
         $content = DataFormatter::string($content);
 
         if(!is_bool($nsfw) || !is_int($communityId)) exit;
+
 
 
         try {
