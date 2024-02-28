@@ -37,11 +37,11 @@ class Community
         return $data;
     }
 
-    public function getCommunity(int $communityId) 
+    public function getCommunity(string $communityId) 
     {
 
         try {
-            $this->db->prepare("SELECT communities.* FROM communities WHERE id = :communityId", [':communityId' => $communityId]);
+            $this->db->prepare("SELECT communities.*, (SELECT COUNT(*) FROM communities_members WHERE community_id = communities.id) AS members_count, users.name AS owner_name FROM communities INNER JOIN users ON communities.owner = users.id WHERE id = :communityId", [':communityId' => $communityId]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -50,7 +50,21 @@ class Community
             return null;
         }
 
-        $data = $this->db->fetchAssoc();
+        $community = $this->db->fetchAssoc();
+
+        try {
+            $this->db->prepare("SELECT users.id, users.name FROM communitites_members INNER JOIN users ON user_id = users.id WHERE community_id = :communityId AND role = 'mod'", [':communityId' => $communityId]);
+            $this->db->execute();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        $moderators = $this->db->fetchAll();
+
+        $data = [
+            'community' => $commmunity,
+            'moderators' => $moderators,
+        ];
 
         return $data;
     }
@@ -74,12 +88,12 @@ class Community
 
         return $data;
     }
-    public function createCommunity(string $name, string $desc, int $userId, bool $nsfw = false): bool
+    public function createCommunity(string $name, string $desc, string $userId, bool $nsfw = false): bool
     {
         $title = DataFormatter::string($title);
         $content = DataFormatter::string($content);
 
-        if(!is_bool($nsfw) || !is_int($userId)) exit;
+        if(!is_bool($nsfw) || !is_numeric($userId)) exit;
 
         try {
             $this->db->prepare("INSERT INTO communities (name, description, owner, nsfw) VALUES(:name, :description, :owner, :nsfw)", [':name' => $name, ':description' => $desc, ':owner' => $userId, ':nsfw' => $nsfw]);
@@ -90,7 +104,7 @@ class Community
 
         return true;
     }
-    public function deleteCommunity(int $communityId, int $userId): bool
+    public function deleteCommunity(string $communityId, string $userId): bool
     {
         try {
             $this->db->prepare("DELETE FROM communities WHERE id = :communityId AND author_id = :authorId", [':communityId' => $communityId, ':authorId' => $authorId]);

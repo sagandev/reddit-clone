@@ -1,8 +1,6 @@
 import { TextInput, Checkbox, Button, Group, Box, PasswordInput, Anchor, Progress, Center } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import $ from 'jquery';
 import { useForm } from '@mantine/form';
-import { useToggle, useInputState } from '@mantine/hooks';
 function PasswordRequirement({ meets, label }) {
   return (
     <Text component="div" c={meets ? 'teal' : 'red'} mt={5} size="sm">
@@ -32,7 +30,7 @@ function getStrength(password) {
 
   return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 0);
 }
-export default function SignupForm() {
+export default function Signup() {
     const form = useForm({
       initialValues: {
         email: '',

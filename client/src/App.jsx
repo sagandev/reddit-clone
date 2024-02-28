@@ -21,7 +21,7 @@ const router = createBrowserRouter([
 ]);
 export default function App() {
   return (
-    <MantineProvider defaultColorScheme='light'>
+    <MantineProvider defaultColorScheme='dark'>
       <Notifications />
       <RouterProvider router={router} />
     </MantineProvider>

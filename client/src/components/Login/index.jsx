@@ -1,12 +1,9 @@
-import {useState} from 'react';
-import { TextInput, Checkbox, Button, Group, Box, PasswordInput, Anchor, Alert } from '@mantine/core';
+import { TextInput, Button, Group, Box, PasswordInput, Anchor} from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useToggle } from '@mantine/hooks';
 import $ from 'jquery';
 import { notifications } from '@mantine/notifications';
 import { IconX, IconChecks } from '@tabler/icons-react';
 export default function LoginForm({toggleLogin, openedLogin}) {
-  const [showAlert, setShowAlert] = useState(false);
     const form = useForm({
       initialValues: {
         email: '',

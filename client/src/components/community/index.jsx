@@ -2,7 +2,8 @@ import {
     Group,
     Text,
     Avatar,
-    Stack
+    Stack,
+    Paper
 } from "@mantine/core";
 export default function CommunitySmallCard({ data }) {
     return (

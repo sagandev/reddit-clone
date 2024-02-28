@@ -47,7 +47,7 @@ class Post
         ];
 
         try {
-            $this->db->prepare("SELECT id, title, content, upvotes, downvotes, posts.created_at, username AS author, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id WHERE posts.id = :postId", [':postId' => $postId]);
+            $this->db->prepare("SELECT posts.id, title, content, upvotes, downvotes, posts.created_at, username AS author, communities.name AS community_name, communities.id AS community_id FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id WHERE posts.id = :postId", [':postId' => $postId]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
