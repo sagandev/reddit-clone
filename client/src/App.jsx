@@ -1,29 +1,29 @@
-import { useState } from 'react'
 import '@mantine/core/styles.css';
-import { createTheme, MantineProvider } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
 import {
-  createBrowserRouter,
-  RouterProvider,
+  Routes, Route, BrowserRouter
 } from "react-router-dom";
 import HomePage from "./pages/Home";
 import PostPage from "./pages/Post";
 import '@mantine/notifications/styles.css';
 import { Notifications } from '@mantine/notifications';
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <HomePage />,
-  },
-  {
-    path: "/r/:community_name/:post_id",
-    element: <PostPage />
-  }
-]);
+import { CookiesProvider } from 'react-cookie';
+import ProtectedRoutes from './protectedRoutes';
+import AdminPage from './admin';
 export default function App() {
   return (
     <MantineProvider defaultColorScheme='dark'>
       <Notifications />
-      <RouterProvider router={router} />
+      <CookiesProvider defaultSetOptions />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage/>}/>
+          <Route path="/r/:community_name/:post_id" element={<PostPage/>}/>
+          <Route element={<ProtectedRoutes/>}>
+            <Route path="/admin" element={<AdminPage/>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </MantineProvider>
   );
 }

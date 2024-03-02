@@ -16,7 +16,7 @@ export default function PostBox({ post }) {
 
     return (
         <>
-            <Flex shadow="xs" direction="column" gap={5} style={{cursor: "pointer"}} onClick={() => navigate(`/${post.community_name}/${post.id}`)}>
+            <Flex shadow="xs" direction="column" gap={5} style={{cursor: "pointer"}} onClick={() => navigate(`/r/${post.community_name}/${post.id}`)}>
                 <Group>
                     <Avatar
                         component="a"

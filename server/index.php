@@ -21,6 +21,9 @@ switch ($URI_PART) {
     case 'communities':
         require_once $routes . 'community.php';
         break;
+    case 'comments':
+        require_once $routes . 'comment.php';
+        break;
     default:
         http_response_code(404);
         break;

@@ -3,6 +3,6 @@
 require __DIR__ . '/../vendor/autoload.php';
 use App\Controllers\AuthController;
 
-$user = new AuthController();
+$auth = new AuthController();
 
-$user->handle();
+$auth->handle();

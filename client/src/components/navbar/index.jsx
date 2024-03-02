@@ -102,7 +102,7 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
                                 }
                                 onClick={() => toggleSignup(!openedSignup)}
                             >
-                                Sign up
+                                Create
                             </Menu.Item>
                             <Menu.Item
                                 leftSection={

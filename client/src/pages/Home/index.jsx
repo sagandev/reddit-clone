@@ -13,12 +13,14 @@ import {
 import PostBox from "../../components/post";
 import CommunitySmallCard from "../../components/community";
 import Navbar from "../../components/navbar";
+import { Cookies } from 'react-cookie';
 export default function HomePage() {
   const [openedLogin, toggleLogin] = useState(false);
   const [openedSignup, toggleSignup] = useState(false);
   const [posts, setPosts] = useState([]);
   const [communities, setCommunities] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
+  const cookies = new Cookies();
   useEffect(() => {
     $.ajax({
       method: "GET",
@@ -34,7 +36,7 @@ export default function HomePage() {
     }).done((res) => {
       setCommunities(res.data)
     })
-    const auth = localStorage.getItem("auth");
+    const auth = cookies.get('auth');
     if (auth) {
       setIsLogged(true);
     }
@@ -42,7 +44,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Modal opened={openedLogin} onClose={() => toggleSignup(!openedLogin)} title="Log in" centered>
+      <Modal opened={openedLogin} onClose={() => toggleLogin(!openedLogin)} title="Log in" centered>
         <Login toggleLogin={toggleLogin} openedLogin={openedLogin} />
       </Modal>
       <Modal
@@ -103,7 +105,7 @@ export default function HomePage() {
                 <Flex ml="sm" direction="column" gap="sm" p="lg" style={{ backgroundColor: "var(--mantine-color-dark-6)", borderRadius: "var(--mantine-radius-md)" }}>
                   <Text tt="uppercase" size="xs" fw={600}>Popular communities</Text>
                   {
-                    communities ? communities.map((val, i) => <CommunitySmallCard data={val} />) : <Loader color="blue" type="dots" />
+                    communities ? communities.map((val, i) => <CommunitySmallCard data={val} key={i}/>) : <Loader color="blue" type="dots" />
                   }
                 </Flex>
               </Grid.Col>

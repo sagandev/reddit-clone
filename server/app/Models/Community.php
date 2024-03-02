@@ -41,7 +41,7 @@ class Community
     {
 
         try {
-            $this->db->prepare("SELECT communities.*, (SELECT COUNT(*) FROM communities_members WHERE community_id = communities.id) AS members_count, users.name AS owner_name FROM communities INNER JOIN users ON communities.owner = users.id WHERE id = :communityId", [':communityId' => $communityId]);
+            $this->db->prepare("SELECT communities.*, (SELECT COUNT(*) FROM communities_members WHERE community_id = communities.id) AS members_count, users.username AS owner_name FROM communities INNER JOIN users ON communities.owner = users.id WHERE communities.id = :communityId", [':communityId' => $communityId]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -53,7 +53,7 @@ class Community
         $community = $this->db->fetchAssoc();
 
         try {
-            $this->db->prepare("SELECT users.id, users.name FROM communitites_members INNER JOIN users ON user_id = users.id WHERE community_id = :communityId AND role = 'mod'", [':communityId' => $communityId]);
+            $this->db->prepare("SELECT users.id, users.username FROM communities_members INNER JOIN users ON user_id = users.id WHERE community_id = :communityId AND role = 'mod'", [':communityId' => $communityId]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -62,7 +62,7 @@ class Community
         $moderators = $this->db->fetchAll();
 
         $data = [
-            'community' => $commmunity,
+            'community' => $community,
             'moderators' => $moderators,
         ];
 

@@ -6,6 +6,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Models\Community;
 use App\Http\Auth;
+
 class CommunityController
 {
     public $community;

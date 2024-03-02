@@ -20,7 +20,7 @@ class User
         $password = DataFormatter::string($password);
 
         try {
-            $this->db->prepare("SELECT email, password FROM users WHERE email = :userEmail", [":userEmail" => $email]);
+            $this->db->prepare("SELECT id, email, password FROM users WHERE email = :userEmail", [":userEmail" => $email]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());

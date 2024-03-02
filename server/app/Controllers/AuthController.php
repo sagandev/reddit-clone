@@ -35,7 +35,7 @@ class AuthController
                     Response::send(401, 'Invalid email or password');
                     exit;
                 }
-                $token = $this->auth->createToken(['email' => $data['email']]);
+                $token = $this->auth->createToken(['email' => $data['email'], 'userId' => $user['id']]);
                 Response::send(200, 'Successfully logged in', ['token' => $token, 'user' => $user]);
                 break;
             default:

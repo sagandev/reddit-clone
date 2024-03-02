@@ -18,7 +18,6 @@ class Database
 
     public $link;
     public $query;
-    public $error;
 
     public function __construct()
     {

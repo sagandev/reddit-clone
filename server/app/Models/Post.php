@@ -11,6 +11,7 @@ use Exception;
 class Post
 {
     public $db;
+    public $error;
 
     public function __construct()
     {
@@ -23,6 +24,7 @@ class Post
             $this->db->prepare("SELECT posts.id, title, content, upvotes, downvotes, posts.created_at, username AS author, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id ORDER BY $orderType DESC LIMIT 100;");
             $this->db->execute();
         } catch (Exception $e) {
+            $this->error = $e;
             throw new Exception($e->getMessage());
         }
         if ($this->db->numRows() < 1) {
@@ -50,6 +52,7 @@ class Post
             $this->db->prepare("SELECT posts.id, title, content, upvotes, downvotes, posts.created_at, username AS author, communities.name AS community_name, communities.id AS community_id FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id WHERE posts.id = :postId", [':postId' => $postId]);
             $this->db->execute();
         } catch (Exception $e) {
+            $this->error = $e;
             throw new Exception($e->getMessage());
         }
         if ($this->db->numRows() < 1) {
@@ -64,6 +67,7 @@ class Post
             $this->db->prepare("SELECT * FROM posts_comments WHERE post_id = :postId", [':postId' => $postId]);
             $this->db->execute();
         } catch (Exception $e) {
+            $this->error = $e;
             throw new Exception($e->getMessage());
         }
 
@@ -87,23 +91,23 @@ class Post
 
         if(!is_bool($nsfw) || !is_int($communityId)) exit;
 
-
-
         try {
             $this->db->prepare("INSERT INTO posts (title, content, community_id, nsfw) VALUES(:title, :content, :communityId, :nsfw)", [':title' => $title, ':content' => $content, ':communityId' => $communityId, ':nsfw' => $nsfw]);
             $this->db->execute();
         } catch (Exception $e) {
+            $this->error = $e;
             throw new Exception($e->getMessage());
         }
 
         return true;
     }
-    public function deleteTask(string $list, string $taskId, string $userId): bool
+    public function deletePost(string $postId, string $userId): bool
     {
         try {
-            $this->db->prepare("DELETE FROM :list WHERE task_id = :taskId AND user_id = :userId", [":list" => $list . "_tasks_list", ":taskId" => $taskId, ":userId" => $userId]);
+            $this->db->prepare("DELETE FROM posts WHERE posts.id = :postId AND author_id = :userId", [':postId' => $postId, ':userId' => $userId]);
             $this->db->execute();
         } catch (Exception $e) {
+            $this->error = $e;
             throw new Exception($e->getMessage());
         }
 

@@ -49,6 +49,19 @@ class PostController
 
                 Response::send(200, 'success', $user);
                 break;
+            case 'DELETE':
+                if(!Auth::verify()) {
+                    Response::send(401, 'Missing authentication. Access not granted');
+                    exit;
+                }
+
+                if (!array_key_exists(2, $params['path'])) {
+                    Response::send(400, "Missing parameters");
+                    exit;
+                }
+                $user = Auth::decode();
+                $delete = $this->post->deletePost($params['path'][2], $user->sub->userId);
+
             default:
                 Response::send(405, 'error');
                 break;

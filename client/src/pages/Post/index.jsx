@@ -4,12 +4,13 @@ import { useParams } from "react-router-dom";
 import {
     AppShell,
     Modal,
-    rem, Text, Flex, Grid, Container, SegmentedControl, Center, Loader, Input, Button
-  } from "@mantine/core";
-  import Login from "../../components/Login";
-  import Signup from "../../components/Signup";
-  import PostPageBox from "../../components/PostPageBox";
-  import Navbar from "../../components/navbar";
+    Text, Flex, Grid, Container, Loader, Input, Button
+} from "@mantine/core";
+import Login from "../../components/Login";
+import Signup from "../../components/Signup";
+import PostPageBox from "../../components/PostPageBox";
+import Navbar from "../../components/navbar";
+import { Cookies } from 'react-cookie';
 export default function PostPage() {
     const params = useParams();
     const [isLogged, setIsLogged] = useState(false);
@@ -17,6 +18,7 @@ export default function PostPage() {
     const [openedSignup, toggleSignup] = useState(false);
     const [post, setPost] = useState([]);
     const [community, setCommunity] = useState([]);
+    const cookies = new Cookies();
     useEffect(() => {
         $.ajax({
             method: "GET",
@@ -32,14 +34,14 @@ export default function PostPage() {
                 setCommunity(resCom.data);
             })
         })
-        const auth = localStorage.getItem("auth");
+        const auth = cookies.get("auth");
         if (auth) {
             setIsLogged(true);
         }
     }, []);
 
     return (<>
-        <Modal opened={openedLogin} onClose={() => toggleSignup(!openedLogin)} title="Log in" centered>
+        <Modal opened={openedLogin} onClose={() => toggleLogin(!openedLogin)} title="Log in" centered>
             <Login toggleLogin={toggleLogin} openedLogin={openedLogin} />
         </Modal>
         <Modal
@@ -55,29 +57,29 @@ export default function PostPage() {
             padding="md"
         >
             <AppShell.Header>
-                <Navbar isLogged={isLogged} openedLogin={openedLogin} toggleLogin={toggleLogin} openedSignup={openedSignup} toggleSignup={toggleSignup}/>
+                <Navbar isLogged={isLogged} openedLogin={openedLogin} toggleLogin={toggleLogin} openedSignup={openedSignup} toggleSignup={toggleSignup} />
             </AppShell.Header>
             <AppShell.Main>
                 <Container size="lg" px={0}>
                     <Grid>
                         <Grid.Col span="auto">
                             {
-                                post.post ? <PostPageBox post={post.post}/> : <Loader color="blue" type="dots" />
+                                post.post ? <PostPageBox post={post.post} /> : <Loader color="blue" type="dots" />
                             }
                             <Flex shadow="xs" direction="column" gap={5}>
-                                <Input radius="xl" placeholder="Add comment" />
+                                <Input radius="xl" placeholder="Add comment" disabled={isLogged ? false:true}/>
                             </Flex>
                         </Grid.Col>
                         <Grid.Col span={3} visibleFrom="md">
-                            {post.post ? 
-                            <Flex ml="sm" direction="column" gap="sm" p="lg" style={{ backgroundColor: "var(--mantine-color-dark-6)", borderRadius: "var(--mantine-radius-md)" }}>
-                                <Flex direction="row" justify="space-between" align="center">
-                                    <Text fw={500} size="lg">r/{post.post.community_name}</Text>
-                                    <Button variant="outline" radius="xl" size="xs">Join</Button>
-                                </Flex>
-                                <Text>
-                                </Text>
-                            </Flex> : <Loader color="blue" type="dots" />}
+                            {post.post ?
+                                <Flex ml="sm" direction="column" gap="sm" p="lg" style={{ backgroundColor: "var(--mantine-color-dark-6)", borderRadius: "var(--mantine-radius-md)" }}>
+                                    <Flex direction="row" justify="space-between" align="center">
+                                        <Text fw={500} size="lg">r/{post.post.community_name}</Text>
+                                        <Button variant="outline" radius="xl" size="xs">Join</Button>
+                                    </Flex>
+                                    <Text>
+                                    </Text>
+                                </Flex> : <Loader color="blue" type="dots" />}
                         </Grid.Col>
                     </Grid>
                 </Container>
