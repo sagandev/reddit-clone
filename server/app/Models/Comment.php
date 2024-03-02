@@ -19,6 +19,7 @@ class Comment
     {
 
         $content = DataFormatter::string($content);
+        $postId = DataFormatter::string($postId);
 
         try {
             $this->db->prepare("SELECT id FROM posts WHERE id = :postId", [':postId' => $postId]);
@@ -35,6 +36,21 @@ class Comment
 
         try {
             $this->db->prepare("INSERT INTO posts_comments (content, author_id, post_id) VALUES (:content, :authorId, :postId)", [':content' => $content, ':authorId' => $userId, ':postId' => $postId]);
+            $this->db->execute();
+        } catch (Exception $e) {
+            $this->error = $e;
+            throw new Exception($e->getMessage());
+        }
+
+        return true;
+    }
+
+    public function deleteComment(string $commentId, string $userId): bool
+    {
+        $commentId = DataFormatter::string($commentId);
+
+        try {
+            $this->db->prepare("DELETE FROM posts_comments WHERE id = :commentId AND author_id = :userId", [':commentId' => $postId, ':userId' => $userId]);
             $this->db->execute();
         } catch (Exception $e) {
             $this->error = $e;
