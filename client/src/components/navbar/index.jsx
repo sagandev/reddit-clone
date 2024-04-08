@@ -25,7 +25,7 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
     return (
         <>
             <Flex h="100%" px="md" justify="space-between" align='center' gap='10'>
-                <Box visibleFrom="md">
+                <Box visibleFrom="md" onClick={() => navigate("/")} style={{cursor: "pointer"}}>
                     <Text fw="bold" size="xl"><IconToolsKitchen2/> Reddish</Text>
                 </Box>
                 <Autocomplete
