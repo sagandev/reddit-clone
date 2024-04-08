@@ -1,23 +1,19 @@
 <?php
 
 namespace App\Http;
+
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Firebase\JWT\SignatureInvalidException;
-use Firebase\JWT\BeforeValidException;
-use Firebase\JWT\ExpiredException;
-use DomainException;
-use InvalidArgumentException;
-use UnexpectedValueException;
 use Exception;
+
 require __DIR__ . "/../../vendor/autoload.php";
 use Dotenv\Dotenv;
+
 $dotenv = Dotenv::createImmutable(__DIR__ . "/../../");
 $dotenv->load();
 class Auth
 {
-
-    public static function createToken(array $data, string $role = 'user') : string
+    public static function createToken(array $data, string $role = 'user'): string
     {
         $payload = [
             'iss' => $_SERVER['REMOTE_ADDR'],
@@ -36,6 +32,10 @@ class Auth
     {
         $token = Request::getAuthToken();
 
+        if (!$token) {
+            throw new Exception("Cant get auth token");
+        }
+
         $decoded = JWT::decode($token, new Key($_ENV["JWT_KEY"], 'HS256'));
 
         return $decoded;
@@ -47,12 +47,12 @@ class Auth
             $decoded = self::decode();
         } catch (Exception $e) {
             return false;
-        } 
+        }
 
         return true;
     }
 
-    public static function has(string $role) : bool
+    public static function has(string $role): bool
     {
         $decoded = self::decode();
 

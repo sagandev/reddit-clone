@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import axios from 'axios';
 import { useEffect, useState } from "react";
 import {
   AppShell,
@@ -7,9 +7,6 @@ import {
 } from "@mantine/core";
 import Login from "../../components/Login";
 import Signup from "../../components/Signup";
-import {
- IconClock12, IconChevronsUp, IconFlame
-} from "@tabler/icons-react";
 import PostBox from "../../components/post";
 import CommunitySmallCard from "../../components/community";
 import Navbar from "../../components/navbar";
@@ -22,20 +19,15 @@ export default function HomePage() {
   const [isLogged, setIsLogged] = useState(false);
   const cookies = new Cookies();
   useEffect(() => {
-    $.ajax({
-      method: "GET",
-      url: "http://localhost:3000/posts?sort=created_at"
-    }).done((res) => {
-      setPosts(res.data);
+    axios.get("http://localhost:3000/posts?sort=created_at").then((res) => {
+      setPosts(res.data.data);
       console.log(res)
     })
 
-    $.ajax({
-      method: "GET",
-      url: "http://localhost:3000/communities"
-    }).done((res) => {
-      setCommunities(res.data)
+    axios.get("http://localhost:3000/communities").then((res) => {
+      setCommunities(res.data.data)
     })
+
     const auth = cookies.get('auth');
     if (auth) {
       setIsLogged(true);
@@ -66,37 +58,6 @@ export default function HomePage() {
           <Container size="lg" px={0}>
             <Grid>
               <Grid.Col span="auto">
-                <SegmentedControl mb="lg"
-                  data={[
-                    {
-                      value: 'New',
-                      label: (
-                        <Center style={{ gap: 10 }}>
-                          <IconClock12 style={{ width: rem(16), height: rem(16) }} />
-                          <span>New</span>
-                        </Center>
-                      ),
-                    },
-                    {
-                      value: 'Top',
-                      label: (
-                        <Center style={{ gap: 10 }}>
-                          <IconChevronsUp style={{ width: rem(16), height: rem(16) }} />
-                          <span>Top</span>
-                        </Center>
-                      ),
-                    },
-                    {
-                      value: 'Hot',
-                      label: (
-                        <Center style={{ gap: 10 }}>
-                          <IconFlame style={{ width: rem(16), height: rem(16) }} />
-                          <span>Hot</span>
-                        </Center>
-                      ),
-                    },
-                  ]}
-                />
                 {
                   posts.length > 0 ? posts.map((el, i) => { return <PostBox post={el} key={i}/> }) : <Loader color="blue" type="dots" />
                 }

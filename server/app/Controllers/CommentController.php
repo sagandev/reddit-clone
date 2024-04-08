@@ -6,6 +6,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Models\Comment;
 use App\Http\Auth;
+
 class CommentController
 {
     public $comment;
@@ -19,29 +20,28 @@ class CommentController
     {
         $method = Request::getMethod();
         $data = Request::getInputData();
-
         switch ($method) {
             case 'POST':
-                if (empty($data['postId']) || empty($data['commentContent'])){
-                    Request::send(400, 'Missing data');
+                if (empty($data['postId']) || empty($data['content'])) {
+                    Response::send(400, 'Missing data');
                     exit;
                 }
 
                 if (!Auth::verify()) {
-                    Response::send(401, 'Missing authentication. Access not granted');
+                    Response::send(401, 'Missing authentication.');
                     exit;
                 }
 
                 $user = Auth::decode();
 
-                $comment = $this->addComment($data['content'], $user->sub->userId);
+                $comment = $this->comment->addComment($data['content'], $data['postId'], $user->sub->userId);
 
                 if ($this->comment->error) {
                     Response::send(500, $this->comment->error);
                     exit;
                 }
 
-                Response::send(200, 'success');
+                Response::send(200, 'success', $comment);
 
                 break;
             case 'DELETE':
@@ -53,13 +53,13 @@ class CommentController
                 }
 
                 if (!Auth::verify()) {
-                    Response::send(401, 'Missing authentication. Access not granted');
+                    Response::send(401, 'Missing authentication.');
                     exit;
                 }
 
                 $user = Auth::decode();
 
-                $comment = $this->deleteComment($params['path'][2], $user->sub->userId);
+                $comment = $this->comment->deleteComment($params['path'][2], $user->sub->userId);
 
                 if ($this->comment->error) {
                     Response::send(500, $this->comment->error);

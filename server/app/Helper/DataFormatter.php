@@ -29,8 +29,9 @@ class DataFormatter
         return true;
     }
 
-    public static function timestamp(string $starttime) : string 
+    public static function timestamp(string $starttime): string
     {
+        date_default_timezone_set('Europe/Warsaw');
         $starttime = strtotime($starttime);
         $now = time();
 
@@ -38,16 +39,16 @@ class DataFormatter
 
         if ($diff < 60) {
             $timestamp = "{$diff} sec. ago";
-        } else if ($diff >= 60 && $diff < 3600) {
-            $timestamp = (int) ($diff / 60) . " min. ago";
-        } else if ($diff >= 3600 && $diff < 86400) {
-            $timestamp = (int) ($diff / 3600) . " hr. ago";
-        } else if ($diff >= 86400 && $diff < 2592000) {
-            $timestamp = (int) ($diff / 86400) . " day(s). ago";
-        } else if ($diff >= 2592000 && $diff < 31104000) {
-            $timestamp = (int) ($diff / 2592000) . " mon. ago";
-        } else if ($diff >= 31104000){
-            $timestamp = (int) ($diff / 2592000) . " yr(s). ago";
+        } elseif ($diff >= 60 && $diff < 3600) {
+            $timestamp = floor($diff / 60) . " min. ago";
+        } elseif ($diff >= 3600 && $diff < 86400) {
+            $timestamp = floor($diff / 3600) . " hr. ago";
+        } elseif ($diff >= 86400 && $diff < 2592000) {
+            $timestamp = floor($diff / 86400) . " day(s). ago";
+        } elseif ($diff >= 2592000 && $diff < 31104000) {
+            $timestamp = floor($diff / 2592000) . " mon. ago";
+        } elseif ($diff >= 31104000) {
+            $timestamp = floor($diff / 2592000) . " yr(s). ago";
         }
 
         return $timestamp;

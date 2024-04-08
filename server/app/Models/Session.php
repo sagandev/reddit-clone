@@ -34,6 +34,7 @@ class Session
             header("location: ../");
         }
     }
+    
     public static function authorized(): bool
     {
         if (!self::get("user")) {
@@ -42,6 +43,7 @@ class Session
 
         return true;
     }
+
     public static function destroy(): void
     {
         session_destroy();

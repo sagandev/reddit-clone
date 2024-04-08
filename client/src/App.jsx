@@ -5,11 +5,10 @@ import {
 } from "react-router-dom";
 import HomePage from "./pages/Home";
 import PostPage from "./pages/Post";
+import SubmitPage from "./pages/Submit";
 import '@mantine/notifications/styles.css';
 import { Notifications } from '@mantine/notifications';
 import { CookiesProvider } from 'react-cookie';
-import ProtectedRoutes from './protectedRoutes';
-import AdminPage from './admin';
 export default function App() {
   return (
     <MantineProvider defaultColorScheme='dark'>
@@ -19,9 +18,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage/>}/>
           <Route path="/r/:community_name/:post_id" element={<PostPage/>}/>
-          <Route element={<ProtectedRoutes/>}>
-            <Route path="/admin" element={<AdminPage/>} />
-          </Route>
+          <Route path="/submit" element={<SubmitPage/>}/>
         </Routes>
       </BrowserRouter>
     </MantineProvider>

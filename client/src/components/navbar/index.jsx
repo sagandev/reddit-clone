@@ -3,22 +3,31 @@ import {
   Button,
   Autocomplete,
   rem,
-  Menu, Box, Flex, Avatar
+  Menu, Box, Flex, Avatar, ActionIcon, Text
 } from "@mantine/core";
 import { MantineLogo } from "@mantinex/mantine-logo";
-
+import { useNavigate } from "react-router-dom";
 import {
   IconSettings,
   IconSearch,
   IconPhoto,
   IconMessageCircle,
-  IconDots, IconTrash, IconPlus
+  IconDots, IconTrash, IconPlus, IconToolsKitchen2
 } from "@tabler/icons-react";
+import { Cookies } from "react-cookie";
 export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup, toggleSignup}) {
+    const cookies = new Cookies();
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        cookies.remove("auth");
+        window.location.reload();
+    }
     return (
         <>
             <Flex h="100%" px="md" justify="space-between" align='center' gap='10'>
-                <Box visibleFrom="md"><MantineLogo size={30}></MantineLogo></Box>
+                <Box visibleFrom="md">
+                    <Text fw="bold" size="xl"><IconToolsKitchen2/> Reddish</Text>
+                </Box>
                 <Autocomplete
                     placeholder="Search"
                     leftSection={
@@ -36,17 +45,18 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
                         "Svelte",
                         "Blitz.js",
                     ]}
-                    radius="xl"
-                    style={{ width: "50%" }}
+                    radius="md"
+                    style={{ width: "50%" }}              
                 />
                 <Group>
                     {
                         isLogged ? <>
                             <Button
                                 variant="light"
-                                radius="xl"
+                                radius="md"
                                 visibleFrom="sm"
                                 leftSection={<IconPlus />}
+                                onClick={() => navigate('/submit')}
                             >
                                 Create
                             </Button>
@@ -68,6 +78,7 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
                                     <Menu.Item
                                         color="red"
                                         leftSection={<IconTrash style={{ width: rem(14), height: rem(14) }} />}
+                                        onClick={() => handleLogout()}
                                     >
                                         Log out
                                     </Menu.Item>
@@ -78,12 +89,12 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
                                 <Button
                                     onClick={() => toggleSignup(!openedSignup)}
                                     variant="light"
-                                    radius="lg"
+                                    radius="md"
                                     visibleFrom="sm"
                                 >
                                     Sign Up
                                 </Button>
-                                <Button onClick={() => toggleLogin(!openedLogin)} radius="lg">
+                                <Button onClick={() => toggleLogin(!openedLogin)} radius="md">
                                     Log In
                                 </Button>
                             </>

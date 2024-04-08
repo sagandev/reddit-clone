@@ -4,11 +4,13 @@ namespace App\Models;
 
 require __DIR__ . "/../../vendor/autoload.php";
 use Dotenv\Dotenv;
+
 $dotenv = Dotenv::createImmutable(__DIR__ . "/../../");
 $dotenv->load();
 use PDO;
 use PDOException;
 use Exception;
+
 class Database
 {
     private string $dbHost;
@@ -18,6 +20,7 @@ class Database
 
     public $link;
     public $query;
+    public $error;
 
     public function __construct()
     {
@@ -29,7 +32,7 @@ class Database
         $this->connect();
     }
 
-    public function connect() : void
+    public function connect(): void
     {
         $dsn = "mysql:host=" . $this->dbHost . ";port=3306;dbname=" . $this->dbName;
         $options = [
@@ -79,6 +82,11 @@ class Database
     public function numRows(): int
     {
         return $this->query->rowCount();
+    }
+
+    public function insertId() : int 
+    {
+        return $this->link->lastInsertId();
     }
 
     public function __destruct()

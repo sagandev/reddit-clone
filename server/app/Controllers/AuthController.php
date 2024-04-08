@@ -6,6 +6,7 @@ use App\Http\Auth;
 use App\Http\Request;
 use App\Http\Response;
 use App\Models\User;
+
 class AuthController
 {
     public $auth;
@@ -24,7 +25,7 @@ class AuthController
 
         switch ($method) {
             case 'POST':
-                if (empty($data['email']) || empty($data['password'])){
+                if (empty($data['email']) || empty($data['password'])) {
                     Response::send(200, 'Missing parameters', $data);
                     exit;
                 }

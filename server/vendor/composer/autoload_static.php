@@ -35,6 +35,7 @@ class ComposerStaticInit4d7677d6287496d4b64090ebb18eff0f
         'W' => 
         array (
             'Webmozart\\Assert\\' => 17,
+            'Webit\\Wrapper\\BcMath\\' => 21,
         ),
         'S' => 
         array (
@@ -47,6 +48,7 @@ class ComposerStaticInit4d7677d6287496d4b64090ebb18eff0f
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\Filesystem\\' => 29,
             'Symfony\\Component\\Console\\' => 26,
+            'Sqids\\' => 6,
             'Spatie\\ArrayToXml\\' => 18,
         ),
         'P' => 
@@ -68,6 +70,10 @@ class ComposerStaticInit4d7677d6287496d4b64090ebb18eff0f
         'J' => 
         array (
             'JmesPath\\' => 9,
+        ),
+        'H' => 
+        array (
+            'Hashids\\' => 8,
         ),
         'G' => 
         array (
@@ -117,6 +123,10 @@ class ComposerStaticInit4d7677d6287496d4b64090ebb18eff0f
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
+        'Webit\\Wrapper\\BcMath\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/webit/bcmath/lib',
+        ),
         'Symfony\\Polyfill\\Php80\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
@@ -152,6 +162,10 @@ class ComposerStaticInit4d7677d6287496d4b64090ebb18eff0f
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
+        ),
+        'Sqids\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sqids/sqids/src',
         ),
         'Spatie\\ArrayToXml\\' => 
         array (
@@ -201,6 +215,10 @@ class ComposerStaticInit4d7677d6287496d4b64090ebb18eff0f
         'JmesPath\\' => 
         array (
             0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
+        ),
+        'Hashids\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/hashids/hashids/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

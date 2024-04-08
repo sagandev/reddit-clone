@@ -37,7 +37,7 @@ class Community
         return $data;
     }
 
-    public function getCommunity(string $communityId) 
+    public function getCommunity(string $communityId)
     {
 
         try {
@@ -68,7 +68,8 @@ class Community
 
         return $data;
     }
-    public function getTopCommunities() 
+
+    public function getTopCommunities()
     {
         try {
             $this->db->prepare("SELECT name, (SELECT COUNT(*) FROM communities_members WHERE community_id = communities.id) AS members FROM communities ORDER BY members DESC LIMIT 5");
@@ -88,12 +89,15 @@ class Community
 
         return $data;
     }
+
     public function createCommunity(string $name, string $desc, string $userId, bool $nsfw = false): bool
     {
-        $title = DataFormatter::string($title);
-        $content = DataFormatter::string($content);
+        $name = DataFormatter::string($name);
+        $desc = DataFormatter::string($desc);
 
-        if(!is_bool($nsfw) || !is_numeric($userId)) exit;
+        if(!is_bool($nsfw) || !is_numeric($userId)) {
+            exit;
+        }
 
         try {
             $this->db->prepare("INSERT INTO communities (name, description, owner, nsfw) VALUES(:name, :description, :owner, :nsfw)", [':name' => $name, ':description' => $desc, ':owner' => $userId, ':nsfw' => $nsfw]);
@@ -104,10 +108,11 @@ class Community
 
         return true;
     }
+    
     public function deleteCommunity(string $communityId, string $userId): bool
     {
         try {
-            $this->db->prepare("DELETE FROM communities WHERE id = :communityId AND author_id = :authorId", [':communityId' => $communityId, ':authorId' => $authorId]);
+            $this->db->prepare("DELETE FROM communities WHERE id = :communityId AND author_id = :authorId", [':communityId' => $communityId, ':authorId' => $userId]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());

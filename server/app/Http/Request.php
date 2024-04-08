@@ -4,19 +4,26 @@ namespace App\Http;
 
 class Request
 {
-
     public static function getInputData()
     {
         $input = file_get_contents('php://input');
-        $data = json_decode($input, true);
-
-        if (empty($data)) {
-            return null;
+        if (isset($_SERVER['CONTENT_TYPE'])){
+            $contentType = explode(";", $_SERVER['CONTENT_TYPE']);
+            if ($contentType[0] == "multipart/form-data") {
+                $data = [
+                    'input' => $_POST,
+                    'files' => $_FILES
+                ];
+            } else {
+                $data = json_decode($input, true);
+            }
+        } else {
+            $data = json_decode($input, true);
         }
 
         return $data;
     }
-    public static function getMethod() : string
+    public static function getMethod(): string
     {
         $method = $_SERVER['REQUEST_METHOD'];
 
@@ -39,13 +46,11 @@ class Request
     public static function getAuthToken()
     {
         if (empty($_SERVER['HTTP_AUTHORIZATION'])) {
-            Response::send(401, 'Missing Authentication. Access not granted');
-            exit; 
+            return false;
         }
         $authHeader = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
         if (empty($authHeader[1]) || $authHeader[0] !== 'Bearer') {
-            Response::send(400, 'Missing Authentication. Access not granted');
-            exit;
+            return false;
         }
         $authToken = $authHeader[1];
         return $authToken;

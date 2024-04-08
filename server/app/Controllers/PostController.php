@@ -6,6 +6,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Models\Post;
 use App\Http\Auth;
+
 class PostController
 {
     public $post;
@@ -29,29 +30,99 @@ class PostController
                     $posts = $this->post->getPosts($sort);
                     Response::send(200, 'success', $posts);
                 } else {
-                    $post = $this->post->getPost($params['path'][2]);
+                    $userId = null;
+                    if (Request::getAuthToken()) {
+                        if(!Auth::verify()){
+                            Response::send(401, 'Missing authentication.');
+                            exit;
+                        }
+                        $decoded = Auth::decode();
+                        $userId = $decoded->sub->userId;
+                    }
+
+                    $post = $this->post->getPost($params['path'][2], $userId);
                     Response::send(200, 'success', $post);
                 }
                 break;
             case 'POST':
+                $params = Request::getURI();
+                if(array_key_exists(2, $params['path'])) {
+                    $userId = null;
+                    if(!Auth::verify()) {
+                        Response::send(401, 'Missing authentication.');
+                        exit;
+                    }
+                    $user = Auth::decode();
+                    $userId = $user->sub->userId;
 
-                if(!Auth::verify()) {
-                    Response::send(401, 'Missing authentication. Access not granted');
-                    exit;
+                    if ($params['path'][2] == 'upvote') {
+                        if (empty($data['postId'])) {
+                            Response::send(400, 'Missing parameters upvote');
+                            exit;
+                        }
+                        $upvote = $this->post->upvote($data['postId'], $userId);
+
+                        if (!$upvote) {
+                            Response::send(500, 'Internal Server Error');
+                            exit;
+                        }
+                    } else if ($params['path'][2] == 'downvote') {
+                        if (empty($data['postId'])) {
+                            Response::send(400, 'Missing parameters downvote');
+                            exit;
+                        }
+                        $downvote = $this->post->downvote($data['postId'], $userId);
+
+                        if (!$downvote) {
+                            Response::send(500, 'Internal Server Error');
+                            exit;
+                        }
+                    } else {
+                        Response::send(404, "Not found");
+                        exit;
+                    }
+                } else {
+                    if(!Auth::verify()) {
+                        Response::send(401, 'Missing authentication.');
+                        exit;
+                    }
+                    $user = Auth::decode();
+                    $userId = $user->sub->userId;
+                    if (empty($data['input']['title']) || empty($data['input']['nsfw']) || empty($data['input']['communityId'])) {
+                        Response::send(400, 'Missing parameters', $data);
+                        exit;
+                    }
+                    
+                    if ($data['input']['nsfw'] != "true" && $data['input']['nsfw'] != "false" && !is_bool($data['input']['nsfw'])) {
+                        Response::send(400, 'Bad request', $data);
+                        exit;
+                    }
+                    $path = "/posts/";
+                    if ($data['files']){
+                        $file = $data['files']['file'];
+                        if ($file['type'] != 'image/png' && $file['type'] != 'image/jpeg') {
+                            Response::send(400, 'Unsupported file type');
+                            exit;
+                        }
+                        if ($file['size'] > 20971520) {
+                            Response::send(400, 'File is too big');
+                            exit;
+                        }
+                        $name = explode('.', $file['name']);
+                        $newName = sha1($name[0] . time() . random_bytes(6)) . '.' . $name[1];
+                        $path = '/posts/'.$newName;
+                        if(!move_uploaded_file($file['tmp_name'], __DIR__ .'/../../storage/posts/'.$newName)){
+                            exit;  
+                        }
+                    }
+                    $this->post->addPost($data['input']['title'], $data['input']['title'], $data['input']['communityId'], $data['input']['nsfw'], $path, $user->sub->userId);
+                    Response::send(200, 'success', $data);
                 }
-
-                if (empty($data['title']) || empty($data['content']) || !is_bool($data['nsfw']) || empty($data['community_id'])) {
-                    Response::send(400, 'Missing parameters', $data);
-                    exit;
-                }
-
-                $user = Auth::decode();
-
-                Response::send(200, 'success', $user);
                 break;
             case 'DELETE':
+                $params = Request::getURI();
                 if(!Auth::verify()) {
-                    Response::send(401, 'Missing authentication. Access not granted');
+                    Response::send(401, 'Missing authentication.');
                     exit;
                 }
 
@@ -62,6 +133,8 @@ class PostController
                 $user = Auth::decode();
                 $delete = $this->post->deletePost($params['path'][2], $user->sub->userId);
 
+                // no break
+                break;
             default:
                 Response::send(405, 'error');
                 break;
