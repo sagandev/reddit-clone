@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   AppShell,
   Modal,
-  rem, Text, Flex, Grid, Container, SegmentedControl, Center, Loader
+  rem, Text, Flex, Grid, Container, SegmentedControl, Center, Loader, Button
 } from "@mantine/core";
 import Login from "../../components/Login";
 import Signup from "../../components/Signup";
@@ -17,11 +17,17 @@ export default function HomePage() {
   const [posts, setPosts] = useState([]);
   const [communities, setCommunities] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
+  const [postsCount, setPostsCount] = useState(0);
   const cookies = new Cookies();
   useEffect(() => {
-    axios.get("http://localhost:3000/posts?sort=created_at").then((res) => {
-      setPosts(res.data.data);
-      console.log(res)
+    const sessionId = cookies.get("sessionId");
+
+    axios.get(`http://localhost:3000/posts?sort=created_at&sessionId=${sessionId}`).then((res) => {
+      setPosts(res.data.data.posts);
+      setPostsCount(res.data.data.posts.length);
+      if (res.data.data.sessionId && !sessionId) {
+        cookies.set("sessionId", res.data.data.sessionId, { expires: new Date(new Date().getTime() + (((12 * 60) * 60)) * 1000), path: "/" })
+      }
     })
 
     axios.get("http://localhost:3000/communities").then((res) => {
@@ -33,6 +39,16 @@ export default function HomePage() {
       setIsLogged(true);
     }
   }, [])
+
+  const handleLoadMore = () => {
+    const sessionId = cookies.get("sessionId");
+    console.log(postsCount)
+    axios.get(`http://localhost:3000/posts?sort=created_at&sessionId=${sessionId}&fromPost=${postsCount}`).then((res) => {
+        setPosts([...posts, ...res.data.data.posts]);
+        console.log(res.data.data.posts)
+        setPostsCount(postsCount + res.data.data.posts.length);
+    })
+  }
 
   return (
     <>
@@ -61,6 +77,9 @@ export default function HomePage() {
                 {
                   posts.length > 0 ? posts.map((el, i) => { return <PostBox post={el} key={i}/> }) : <Loader color="blue" type="dots" />
                 }
+                <Center>
+                <Button variant="transparent" onClick={() => handleLoadMore()}>Load more</Button>
+                </Center>
               </Grid.Col>
               <Grid.Col span={3} visibleFrom="md">
                 <Flex ml="sm" direction="column" gap="sm" p="lg" style={{ backgroundColor: "var(--mantine-color-dark-6)", borderRadius: "var(--mantine-radius-md)" }}>

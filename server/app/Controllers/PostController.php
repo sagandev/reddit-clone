@@ -6,14 +6,18 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Models\Post;
 use App\Http\Auth;
+use App\Models\CachePost;
+
 
 class PostController
 {
     public $post;
+    public $cache;
 
     public function __construct()
     {
         $this->post = new Post();
+        $this->cache = new CachePost();
     }
 
     public function handle()
@@ -27,8 +31,24 @@ class PostController
                 // 2 = PostId index in params array
                 if(!array_key_exists(2, $params['path'])) {
                     $sort = $params['query']['sort'] ?? "upvotes";
-                    $posts = $this->post->getPosts($sort);
-                    Response::send(200, 'success', $posts);
+                    if (empty($params['query']['sessionId'])){
+                        $sessionId = md5(rand() . microtime() . str_shuffle($_ENV['SESSION_ID_SECRET']));
+                    } else {
+                        $sessionId = $params['query']['sessionId'];
+                    }
+                    $data = ['posts' => [], 'sessionId' => $sessionId];
+                    if (empty($params['query']['fromPost'])) {
+                        $posts = $this->post->getPosts($sort);
+                        $this->cache->insert($sessionId, json_encode($posts));
+                        for ($i = 0; $i < 5; $i++) {
+                            if (!$posts[$i]) break;
+                            $data['posts'][] = $posts[$i];
+                        }
+                    } else {
+                        $posts = $this->cache->get($sessionId, $params['query']['fromPost']);
+                        $data['posts'] = $posts;
+                    }
+                    Response::send(200, 'success', $data);
                 } else {
                     $userId = null;
                     if (Request::getAuthToken()) {

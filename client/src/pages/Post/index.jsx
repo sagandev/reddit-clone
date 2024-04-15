@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import {
     AppShell,
     Modal,
-    Text, Flex, Grid, Container, Loader, Input, Button, CopyButton, Textarea
+    Text, Flex, Grid, Container, Loader, Input, Button, CopyButton, Textarea, Pagination, Center
 } from "@mantine/core";
 import Login from "../../components/Login";
 import Signup from "../../components/Signup";
@@ -14,15 +14,38 @@ import Comment from "../../components/PostPageBox/comment";
 import { Cookies } from 'react-cookie';
 import { useForm } from '@mantine/form';
 import { IconSend, IconLink } from '@tabler/icons-react';
+
+const commentsPaginated = (comments) => {
+    const dataOnSinglePage = 5;
+    const pages = Math.ceil(comments.length / dataOnSinglePage);
+    let data = [];
+    let rowPoint = 0;
+
+    for (let i = 0; i < pages; i++) {
+        let page = [];
+        for (let j = rowPoint; j < rowPoint + dataOnSinglePage; j++) {
+            if (j > comments.length - 1) break;
+            page.push(comments[j]);
+        }
+        data.push(page)
+        rowPoint += dataOnSinglePage;
+    }
+
+    return data;
+}
+
 export default function PostPage() {
     const params = useParams();
     const [isLogged, setIsLogged] = useState(false);
     const [openedLogin, toggleLogin] = useState(false);
     const [openedSignup, toggleSignup] = useState(false);
     const [post, setPost] = useState([]);
-    const [comments, setComments] = useState([]);
+    const [comments, setComments] = useState();
+    const [newComments, setNewComments] = useState([]);
     const [community, setCommunity] = useState([]);
     const [user, setUser] = useState([]);
+    const [activePage, setActivePage] = useState(1);
+    const [blockType, setBlockType] = useState(false);
     const cookies = new Cookies();
     useEffect(() => {
         const auth = cookies.get("auth");
@@ -30,17 +53,17 @@ export default function PostPage() {
             setIsLogged(true);
         }
         axios.get(`http://localhost:3000/posts/${params.post_id}`, { headers: auth ? { "Authorization": "Bearer " + auth } : null }).then((res) => {
-            console.log(res)
             setPost(res.data.data);
-            setComments(res.data.data.comments);
+            const data = commentsPaginated(res.data.data.comments);
+            setComments(data);
             axios.get(`http://localhost:3000/communities/${res.data.data.post.community_id}`).then((res) => {
-                console.log(res)
                 setCommunity(res.data.data);
             })
         })
 
         const user = localStorage.getItem("user");
         if (user) setUser(user);
+
     }, []);
     const form = useForm({
         initialValues: {
@@ -55,7 +78,6 @@ export default function PostPage() {
         const auth = cookies.get("auth");
         if (!auth) return;
         const user = JSON.parse(localStorage.getItem("user"));
-        console.log(user)
         axios.post("http://localhost:3000/comments", {
             content: values.content,
             postId: post.post.id
@@ -66,11 +88,14 @@ export default function PostPage() {
             }
         }).then((res) => {
             if (res.data.status == 200) {
-                setComments([...comments, {id: res.data.data.id, author_id: res.data.data.author_id, post_id: res.data.data.post_id, content: res.data.data.content, author_name: user.user.username, timestamp: "now"}])
+                setNewComments([...newComments, {id: res.data.data.id, author_id: res.data.data.author_id, post_id: res.data.data.post_id, content: res.data.data.content, author_name: user.user.username, timestamp: "now"}])
             }
         })
+        setBlockType(true);
+        setTimeout(() => {
+            setBlockType(false);
+        }, 3000)
     }
-
 
     return (<>
         <Modal opened={openedLogin} onClose={() => toggleLogin(!openedLogin)} title="Log in" centered>
@@ -94,17 +119,19 @@ export default function PostPage() {
             <AppShell.Main>
                 <Container size="lg" px={0}>
                     <Grid>
-                        <Grid.Col span="auto">
+                        <Grid.Col span="auto" >
                             {
                                 post.post ? <PostPageBox post={post.post} isLogged={isLogged}/> : <Loader color="blue" type="dots" />
                             }
                             <Flex shadow="xs" direction="column" gap={5}>
                                 <form onSubmit={form.onSubmit((values) => handleSubmit(values))} style={{ display: "flex", flexDirection: "row", gap: 5 }}>
-                                    <Textarea radius="md" placeholder="Add comment" disabled={isLogged ? false : true} style={{ flex: 1 }} {...form.getInputProps('content')} />
-                                    <Button type="submit" variant='blue' color='gray' radius="md" leftSection={<IconSend />} disabled={isLogged ? false : true}>Send</Button>
+                                    <Textarea radius="md" placeholder="Add comment" disabled={!isLogged || blockType ? true : false} style={{ flex: 1 }} {...form.getInputProps('content')} />
+                                    <Button type="submit" variant='blue' color='gray' radius="md" leftSection={<IconSend />} disabled={!isLogged || blockType ? true : false}>Send</Button>
                                 </form>
-                                {comments ? comments.map((val, i) => <Comment comment={val} key={i} />) : <Loader color="blue" type="dots" />}
+                                {newComments ? newComments.map((val, i) => <Comment comment={val} key={i} />): null}
+                                {comments?.length >= 1 ? comments[activePage - 1].map((val, i) => <Comment comment={val} key={i} />):null}
                             </Flex>
+                            <Center>{comments ? <Pagination total={comments.length} size="md" radius="md" withControls={true} value={activePage} onChange={setActivePage}/> : null }</Center>
                         </Grid.Col>
                         <Grid.Col span={3} visibleFrom="md">
                             {post.post ?

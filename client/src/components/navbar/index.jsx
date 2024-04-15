@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Group,
   Button,
@@ -22,6 +23,18 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
         cookies.remove("auth");
         window.location.reload();
     }
+    const [searchTimeout, setSearchTimeout] = useState(null);
+    const [search, setSearch] = useState('');
+    const handleSearch = (value) => {
+        if (value.length < 3) return;
+        if (searchTimeout) clearTimeout(searchTimeout);
+
+        const timeout = setTimeout(() =>{
+            console.log("timeout")
+        }, 2000)
+        setSearchTimeout(timeout);
+    }
+
     return (
         <>
             <Flex h="100%" px="md" justify="space-between" align='center' gap='10'>
@@ -46,7 +59,12 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
                         "Blitz.js",
                     ]}
                     radius="md"
-                    style={{ width: "50%" }}              
+                    style={{ width: "50%" }}
+                    value={search}
+                    onInput={(e) => {
+                        setSearch(e.target.value);
+                        handleSearch(e.target.value);
+                    }}      
                 />
                 <Group>
                     {
