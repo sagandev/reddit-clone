@@ -25,9 +25,7 @@ export default function PostPageBox({ post, isLogged }) {
         axios.post("http://localhost:3000/posts/upvote", {
             postId: post.id
         }, {
-            headers: {
-                'Authorization': "Bearer " + auth
-            }
+            withCredentials: true
         })
 
         if (downvote) {
@@ -49,9 +47,7 @@ export default function PostPageBox({ post, isLogged }) {
         axios.post("http://localhost:3000/posts/downvote", {
             postId: post.id
         }, {
-            headers: {
-                'Authorization': "Bearer " + auth
-            }
+            withCredentials: true
         })
 
         if (upvote) {

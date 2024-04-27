@@ -38,7 +38,7 @@ class CachePost
         $res = [];
 
         for ($i = $from; $i < $from + 5; $i++) {
-            if (!$data[$i]) break;
+            if (!isset($data[$i])) break;
             $res[] = $data[$i];
         }
 

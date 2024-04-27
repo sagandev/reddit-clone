@@ -96,12 +96,7 @@ export default function SubmitPage() {
             form.append('file', acceptedFiles[0]);
         }
         const auth = cookies.get('auth');
-        axios.post("http://localhost:3000/posts", form, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': 'Bearer ' + auth,
-            }
-        }).then((res) => {
+        axios.post("http://localhost:3000/posts", form, {withCredentials: true}).then((res) => {
             console.log(res)
         })
     }

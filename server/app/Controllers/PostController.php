@@ -31,22 +31,32 @@ class PostController
                 // 2 = PostId index in params array
                 if(!array_key_exists(2, $params['path'])) {
                     $sort = $params['query']['sort'] ?? "upvotes";
-                    if (empty($params['query']['sessionId'])){
-                        $sessionId = md5(rand() . microtime() . str_shuffle($_ENV['SESSION_ID_SECRET']));
-                    } else {
-                        $sessionId = $params['query']['sessionId'];
-                    }
-                    $data = ['posts' => [], 'sessionId' => $sessionId];
-                    if (empty($params['query']['fromPost'])) {
-                        $posts = $this->post->getPosts($sort);
-                        $this->cache->insert($sessionId, json_encode($posts));
-                        for ($i = 0; $i < 5; $i++) {
-                            if (!$posts[$i]) break;
-                            $data['posts'][] = $posts[$i];
+                    if (isset($params['query']['sort'])) {
+                        if (empty($params['query']['sessionId']) || $params['query']['sessionId'] == "undefined"){
+                            $sessionId = md5(rand() . microtime() . str_shuffle($_ENV['SESSION_ID_SECRET']));
+                        } else {
+                            $sessionId = $params['query']['sessionId'];
                         }
-                    } else {
-                        $posts = $this->cache->get($sessionId, $params['query']['fromPost']);
-                        $data['posts'] = $posts;
+                        $data = ['posts' => [], 'sessionId' => $sessionId];
+                        if (empty($params['query']['fromPost'])) {
+                            $posts = $this->post->getPosts($sort);
+                            $this->cache->insert($sessionId, json_encode($posts));
+                            for ($i = 0; $i < 5; $i++) {
+                                if (!isset($posts[$i])) break;
+                                $data['posts'][] = $posts[$i];
+                            }
+                        } else {
+                            $posts = $this->cache->get($sessionId, $params['query']['fromPost']);
+                            $data['posts'] = $posts;
+                        }
+                    } else if ($params['query']['search']) {
+                        if (empty($params['query']['search'])) {
+                            Response::send(400, 'Missing search value');
+                            exit;
+                        }
+
+                        $searchedPosts = $this->post->search($params['query']['search']);
+                        Response::send(200, 'success', $searchedPosts);
                     }
                     Response::send(200, 'success', $data);
                 } else {

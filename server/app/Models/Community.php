@@ -23,7 +23,7 @@ class Community
         $search = DataFormatter::string($search);
 
         try {
-            $this->db->prepare("SELECT communities.name, communities.id, (SELECT COUNT(*) FROM communities_members WHERE community_id = communities.id) AS members FROM communities WHERE community_name LIKE '%:search%'", [':search' => $search]);
+            $this->db->prepare("SELECT communities.name, communities.id, (SELECT COUNT(*) FROM communities_members WHERE community_id = communities.id) AS members FROM communities WHERE communities.name LIKE :search", [':search' => '%'.$search.'%']);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());

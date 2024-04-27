@@ -23,8 +23,9 @@ class Post
         $this->sqids = new Sqids(minLength:12, alphabet: $_ENV['SQIDS_ALPHA']);
     }
 
-    public function getPosts(string $orderType)
+    public function getPosts(string $orderType, string|null $communityId = null)
     {
+
         try {
             $this->db->prepare("SELECT posts.id, title, content, imagePath, posts.nsfw, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, posts.created_at, username AS author, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id GROUP BY posts.id ORDER BY $orderType DESC LIMIT 1000;");
             $this->db->execute();
@@ -220,5 +221,20 @@ class Post
 
             return true;
         }
+    }
+
+    public function search(string $value) 
+    {
+        $value = DataFormatter::string($value);
+        try {
+            $this->db->prepare("SELECT posts.id, title, content, imagePath, posts.nsfw, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, posts.created_at, username AS author, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.title LIKE :search GROUP BY posts.id LIMIT 10;", [':search' => '%'.$value.'%']);
+            $this->db->execute();
+        } catch (Exception $e) {
+            $this->error = $e;
+            throw new Exception($e->getMessage());
+        }
+
+        $data = $this->db->fetchAll();
+        return $data;
     }
 }

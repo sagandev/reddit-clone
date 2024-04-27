@@ -16,6 +16,7 @@ import {
   IconDots, IconTrash, IconPlus, IconToolsKitchen2
 } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
+import axios from 'axios';
 export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup, toggleSignup}) {
     const cookies = new Cookies();
     const navigate = useNavigate();
@@ -25,14 +26,30 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
     }
     const [searchTimeout, setSearchTimeout] = useState(null);
     const [search, setSearch] = useState('');
+    const [searchData, setSearchData] = useState([]);
+    const sendReq = () => {
+        axios.get(`http://localhost:3000/communities?search=${search}`).then((res) => {
+            console.log(res.data.data);
+            const data = res.data.data;
+
+            let d = [];
+
+            data.map((val) => {
+                d.push("r/" + val.name);
+            });
+
+            setSearchData(d);
+            console.log(searchData)
+        })
+    }
+    const timeout = () => {
+        setSearchTimeout(setTimeout(sendReq, 2000));
+    }
     const handleSearch = (value) => {
         if (value.length < 3) return;
         if (searchTimeout) clearTimeout(searchTimeout);
 
-        const timeout = setTimeout(() =>{
-            console.log("timeout")
-        }, 2000)
-        setSearchTimeout(timeout);
+        timeout();
     }
 
     return (
@@ -49,22 +66,15 @@ export default function Navbar({isLogged, openedLogin, toggleLogin, openedSignup
                             stroke={1.5}
                         />
                     }
-                    data={[
-                        "React",
-                        "Angular",
-                        "Vue",
-                        "Next.js",
-                        "Riot.js",
-                        "Svelte",
-                        "Blitz.js",
-                    ]}
+                    data={searchData}
                     radius="md"
                     style={{ width: "50%" }}
                     value={search}
                     onInput={(e) => {
                         setSearch(e.target.value);
                         handleSearch(e.target.value);
-                    }}      
+                    }}    
+                    onSelect={(e) => console.log(e.target.value)}  
                 />
                 <Group>
                     {
