@@ -115,7 +115,7 @@ export default function LoginForm({ toggleLogin, openedLogin }) {
           radius="lg"
         />
         <Group justify="space-between" mt="md">
-          <Anchor href={`${config.clientServer}/recovery/`} c="dimmed" size="xs">
+          <Anchor href={`${config.clientAddr}/recovery/`} c="dimmed" size="xs">
             Forgot your password?
           </Anchor>
           <Button type="submit" radius="lg">

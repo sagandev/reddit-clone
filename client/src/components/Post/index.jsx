@@ -147,7 +147,7 @@ export default function PostBox({ post }) {
                     color="gray"
                     onClick={() =>
                       clipboard.copy(
-                        `${config.clientServer}/r/${post.community_name}/${post.id}`
+                        `${config.clientAddr}/r/${post.community_name}/${post.id}`
                       )
                     }
                     w="100%"

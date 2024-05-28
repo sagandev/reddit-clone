@@ -315,7 +315,7 @@ export default function PostPage() {
                         </Flex>
                         <Flex direction="column">
                           <CopyButton
-                            value={`${config.clientServer}/r/${post.community_name}`}
+                            value={`${config.clientAddr}/r/${post.community_name}`}
                           >
                             {({ copied, copy }) => (
                               <Button

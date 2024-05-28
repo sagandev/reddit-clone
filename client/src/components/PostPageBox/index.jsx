@@ -206,7 +206,7 @@ export default function PostPageBox({ post, isLogged }) {
               </Popover.Target>
               <Popover.Dropdown>
                 <CopyButton
-                  value={`${config.clientServer}/r/${post.community_name}/${post.id}`}
+                  value={`${config.clientAddr}/r/${post.community_name}/${post.id}`}
                 >
                   {({ copied, copy }) => (
                     <Button

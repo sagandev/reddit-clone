@@ -158,7 +158,7 @@ export default function UserPage() {
             ) : (
               <>
                 <Text>This user not exists</Text>{" "}
-                <Anchor href={config.clientServer}>go back home</Anchor>
+                <Anchor href={config.clientAddr}>go back home</Anchor>
               </>
             )}
           </AppShell.Main>
