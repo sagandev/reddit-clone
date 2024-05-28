@@ -3,10 +3,12 @@
 namespace App\Models;
 
 require __DIR__ . "/../../vendor/autoload.php";
+
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . "/../../");
 $dotenv->load();
+
 use PDO;
 use PDOException;
 use Exception;
@@ -34,10 +36,11 @@ class Database
 
     public function connect(): void
     {
-        $dsn = "mysql:host=" . $this->dbHost . ";port=3306;dbname=" . $this->dbName;
+        $dsn = "mysql:host=" . $this->dbHost . ";port=3306;dbname=" . $this->dbName . ";charset=utf8mb4";
         $options = [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_EMULATE_PREPARES => 1
         ];
         try {
             $this->link = new PDO($dsn, $this->dbUser, $this->dbUserPass, $options);
@@ -84,7 +87,7 @@ class Database
         return $this->query->rowCount();
     }
 
-    public function insertId() : int 
+    public function insertId(): int
     {
         return $this->link->lastInsertId();
     }

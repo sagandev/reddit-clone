@@ -2326,6 +2326,10 @@ class Config
 
         foreach ($stub_files as $file_path) {
             $file_path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file_path);
+            // fix mangled phar paths on Windows
+            if (strpos($file_path, 'phar:\\\\') === 0) {
+                $file_path = 'phar://'. substr($file_path, 7);
+            }
             $codebase->scanner->addFileToDeepScan($file_path);
         }
 
@@ -2423,6 +2427,10 @@ class Config
 
         foreach ($stub_files as $file_path) {
             $file_path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $file_path);
+            // fix mangled phar paths on Windows
+            if (strpos($file_path, 'phar:\\\\') === 0) {
+                $file_path = 'phar://' . substr($file_path, 7);
+            }
             $codebase->scanner->addFileToDeepScan($file_path);
         }
 
@@ -2773,8 +2781,22 @@ class Config
                 $version_parser = new VersionParser();
 
                 $constraint = $version_parser->parseConstraints($php_version);
+                $php_versions = [
+                    '5.4',
+                    '5.5',
+                    '5.6',
+                    '7.0',
+                    '7.1',
+                    '7.2',
+                    '7.3',
+                    '7.4',
+                    '8.0',
+                    '8.1',
+                    '8.2',
+                    '8.3',
+                ];
 
-                foreach (['5.4', '5.5', '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1'] as $candidate) {
+                foreach ($php_versions as $candidate) {
                     if ($constraint->matches(new Constraint('<=', "$candidate.0.0-dev"))
                         || $constraint->matches(new Constraint('<=', "$candidate.999"))
                     ) {

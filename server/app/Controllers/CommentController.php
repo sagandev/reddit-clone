@@ -6,6 +6,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Models\Comment;
 use App\Http\Auth;
+use App\Helper\Validator;
 
 class CommentController
 {
@@ -22,6 +23,12 @@ class CommentController
         $data = Request::getInputData();
         switch ($method) {
             case 'POST':
+                $csrf = Request::getHeader('X-CSRF-TOKEN');
+                // $validate = Validator::csrfValidate($csrf);
+                // if (!$validate) {
+                //     Response::send(403, 'Forbidden');
+                //     exit;
+                // }
                 if (empty($data['postId']) || empty($data['content'])) {
                     Response::send(400, 'Missing data');
                     exit;

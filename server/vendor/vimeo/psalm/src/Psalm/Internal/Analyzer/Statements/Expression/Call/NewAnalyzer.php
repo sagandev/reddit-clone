@@ -76,7 +76,7 @@ final class NewAnalyzer extends CallAnalyzer
         StatementsAnalyzer $statements_analyzer,
         PhpParser\Node\Expr\New_ $stmt,
         Context $context,
-        TemplateResult $template_result = null
+        ?TemplateResult $template_result = null
     ): bool {
         $fq_class_name = null;
 
@@ -159,7 +159,11 @@ final class NewAnalyzer extends CallAnalyzer
             }
         } elseif ($stmt->class instanceof PhpParser\Node\Stmt\Class_) {
             $statements_analyzer->analyze([$stmt->class], $context);
-            $fq_class_name = ClassAnalyzer::getAnonymousClassName($stmt->class, $statements_analyzer->getFilePath());
+            $fq_class_name = ClassAnalyzer::getAnonymousClassName(
+                $stmt->class,
+                $statements_analyzer->getAliases(),
+                $statements_analyzer->getFilePath(),
+            );
         } else {
             self::analyzeConstructorExpression(
                 $statements_analyzer,
@@ -306,7 +310,7 @@ final class NewAnalyzer extends CallAnalyzer
         string $fq_class_name,
         bool $from_static,
         bool $can_extend,
-        TemplateResult $template_result = null
+        ?TemplateResult $template_result = null
     ): void {
         $storage = $codebase->classlike_storage_provider->get($fq_class_name);
 

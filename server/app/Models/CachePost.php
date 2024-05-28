@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 require __DIR__ . '/../../vendor/autoload.php';
@@ -22,15 +23,15 @@ class CachePost
 
     public function insert($sessionId, $data)
     {
-        $set = $this->redis->setEx('session:'.$sessionId, 3600 * 12, $data);
+        $set = $this->redis->setEx('session:' . $sessionId, 3600 * 12, $data);
 
         return $set;
     }
 
-    public function get(string $sessionId, int $from) : array
+    public function get(string $sessionId, int $from): array
     {
-        $data = $this->redis->getEx('session:'.$sessionId);
-        
+        $data = $this->redis->getEx('session:' . $sessionId);
+
         $data = json_decode($data);
 
         $from = intval($from);

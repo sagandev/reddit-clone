@@ -55,4 +55,15 @@ class Request
         $authToken = $authHeader[1];
         return $authToken;
     }
+
+    public static function getHeader(string $headerName) 
+    {
+        if (empty($_SERVER[$headerName])) {
+            return false;
+        }
+
+        $header = $_SERVER[$headerName];
+
+        return $header;
+    }
 }

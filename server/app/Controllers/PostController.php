@@ -7,12 +7,14 @@ use App\Http\Response;
 use App\Models\Post;
 use App\Http\Auth;
 use App\Models\CachePost;
-
+use App\Models\File;
+use App\Helper\Validator;
 
 class PostController
 {
     public $post;
     public $cache;
+    public $file;
 
     public function __construct()
     {
@@ -38,16 +40,26 @@ class PostController
                             $sessionId = $params['query']['sessionId'];
                         }
                         $data = ['posts' => [], 'sessionId' => $sessionId];
-                        if (empty($params['query']['fromPost'])) {
-                            $posts = $this->post->getPosts($sort);
-                            $this->cache->insert($sessionId, json_encode($posts));
-                            for ($i = 0; $i < 5; $i++) {
-                                if (!isset($posts[$i])) break;
-                                $data['posts'][] = $posts[$i];
-                            }
-                        } else {
-                            $posts = $this->cache->get($sessionId, $params['query']['fromPost']);
+                        if (isset($params['query']['communityName'])) {
+                            $posts = $this->post->getPosts($sort, $params['query']['communityName']);
                             $data['posts'] = $posts;
+                        } else {
+                            if(isset($params['query']['userName'])){
+                                $posts = $this->post->getPosts($sort, null, $params['query']['userName']);
+                                $data['posts'] = $posts;
+                            } else {
+                                if (empty($params['query']['fromPost'])) {
+                                    $posts = $this->post->getPosts($sort);
+                                    $this->cache->insert($sessionId, json_encode($posts));
+                                    for ($i = 0; $i < 5; $i++) {
+                                        if (!isset($posts[$i])) break;
+                                        $data['posts'][] = $posts[$i];
+                                    }
+                                } else {
+                                    $posts = $this->cache->get($sessionId, $params['query']['fromPost']);
+                                    $data['posts'] = $posts;
+                                }
+                            } 
                         }
                     } else if ($params['query']['search']) {
                         if (empty($params['query']['search'])) {
@@ -76,6 +88,12 @@ class PostController
                 break;
             case 'POST':
                 $params = Request::getURI();
+                $csrf = Request::getHeader('X-CSRF-TOKEN');
+                // $validate = Validator::csrfValidate($csrf);
+                // if (!$validate) {
+                //     Response::send(403, 'Forbidden');
+                //     exit;
+                // }
                 if(array_key_exists(2, $params['path'])) {
                     $userId = null;
                     if(!Auth::verify()) {
@@ -128,25 +146,21 @@ class PostController
                         exit;
                     }
                     $path = "/posts/";
-                    if ($data['files']){
+                    $uploadName = null;
+                    if (array_key_exists("file", $data['files'])){
                         $file = $data['files']['file'];
-                        if ($file['type'] != 'image/png' && $file['type'] != 'image/jpeg') {
-                            Response::send(400, 'Unsupported file type');
+                        $upload = new File($path, $file);
+                        //Validate
+
+                        if ($upload->error) {
+                            Response::send($upload->httpStatus, $upload->error);
                             exit;
                         }
-                        if ($file['size'] > 20971520) {
-                            Response::send(400, 'File is too big');
-                            exit;
-                        }
-                        $name = explode('.', $file['name']);
-                        $newName = sha1($name[0] . time() . random_bytes(6)) . '.' . $name[1];
-                        $path = '/posts/'.$newName;
-                        if(!move_uploaded_file($file['tmp_name'], __DIR__ .'/../../storage/posts/'.$newName)){
-                            exit;  
-                        }
+                        $uploadName = $upload->name;
+
                     }
-                    $this->post->addPost($data['input']['title'], $data['input']['title'], $data['input']['communityId'], $data['input']['nsfw'], $path, $user->sub->userId);
-                    Response::send(200, 'success', $data);
+                    $this->post->addPost($data['input']['title'], $data['input']['content'], $data['input']['communityId'], $data['input']['nsfw'], $uploadName, $user->sub->userId);
+                    Response::send(200, 'success', $this->post->postId);
                 }
                 break;
             case 'DELETE':

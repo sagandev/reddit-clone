@@ -15,7 +15,7 @@ class Post
     public $db;
     public $error;
     public $sqids;
-
+    public $postId;
 
     public function __construct()
     {
@@ -23,11 +23,28 @@ class Post
         $this->sqids = new Sqids(minLength:12, alphabet: $_ENV['SQIDS_ALPHA']);
     }
 
-    public function getPosts(string $orderType, string|null $communityId = null)
+    public function getPosts(string $orderType, ?string $communityName = null, ?string $username= null) : ?array
     {
 
+        $params = [];
+
+        if ($communityName) {
+            $communityName = DataFormatter::string($communityName);
+            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, posts.created_at, username AS author, avatar, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name, communities.icon AS community_icon, posts.community_id FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN users_details ON users.id = users_details.user_id INNER JOIN communities ON posts.community_id = communities.id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE communities.name = :communityName";
+            $params = [':communityName' => $communityName];
+        } else {
+            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, posts.created_at, username AS author, avatar, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name, communities.icon AS community_icon, posts.community_id FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN users_details ON users.id = users_details.user_id INNER JOIN communities ON posts.community_id = communities.id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id";
+        }
+
+        if($username) {
+            $username = DataFormatter::string($username);
+            if(!$communityName) $sql .= " WHERE username = :username";
+            else $sql .= " AND username = :username";
+            $params[':username'] = $username;
+        }
+
         try {
-            $this->db->prepare("SELECT posts.id, title, content, imagePath, posts.nsfw, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, posts.created_at, username AS author, (SELECT COUNT(posts_comments.id) FROM posts_comments WHERE posts_comments.post_id = posts.id) AS comments, communities.name AS community_name FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id GROUP BY posts.id ORDER BY $orderType DESC LIMIT 1000;");
+            $this->db->prepare($sql ." GROUP BY posts.id ORDER BY $orderType DESC LIMIT 1000;", $params);
             $this->db->execute();
         } catch (Exception $e) {
             $this->error = $e;
@@ -47,7 +64,7 @@ class Post
         return $data;
     }
 
-    public function getPost(string $postId, string|null $userId)
+    public function getPost(string $postId, ?string $userId = null) : ?array
     {
         $postIdDecoded = implode($this->sqids->decode($postId));
 
@@ -57,9 +74,9 @@ class Post
         ];
 
         if (!$userId) {
-            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, posts.created_at, username AS author, communities.name AS community_name, communities.id AS community_id, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.id = :postId";
+            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, posts.created_at, username AS author, avatar, communities.name AS community_name, communities.id AS community_id, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id INNER JOIN users_details ON users.id = users_details.user_id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.id = :postId";
         } else {
-            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, posts.created_at, username AS author, communities.name AS community_name, communities.id AS community_id, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, (SELECT COUNT(*) FROM posts_upvotes WHERE post_id = :postId AND user_id = :userId) AS userUpvote, (SELECT COUNT(*) FROM posts_downvotes WHERE post_id = :postId AND user_id = :userId) As userDownvote FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.id = :postId";
+            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, posts.created_at, username AS author, avatar, communities.name AS community_name, communities.id AS community_id, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, (SELECT COUNT(*) FROM posts_upvotes WHERE post_id = :postId AND user_id = :userId) AS userUpvote, (SELECT COUNT(*) FROM posts_downvotes WHERE post_id = :postId AND user_id = :userId) As userDownvote FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id INNER JOIN users_details ON users.id = users_details.user_id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.id = :postId";
         }
 
         try {
@@ -78,7 +95,7 @@ class Post
         $post['timestamp'] = DataFormatter::timestamp($post['created_at']);
 
         try {
-            $this->db->prepare("SELECT posts_comments.*, username AS author_name FROM posts_comments INNER JOIN users ON author_id = users.id WHERE post_id = :postId ORDER BY posts_comments.created_at DESC", [':postId' => $postIdDecoded]);
+            $this->db->prepare("SELECT posts_comments.*, username AS author_name, avatar FROM posts_comments INNER JOIN users ON author_id = users.id INNER JOIN users_details ON users.id = users_details.user_id WHERE post_id = :postId ORDER BY posts_comments.created_at DESC", [':postId' => $postIdDecoded]);
             $this->db->execute();
         } catch (Exception $e) {
             $this->error = $e;
@@ -99,7 +116,7 @@ class Post
         return $data;
     }
 
-    public function addPost(string $title, string $content, string $communityId, string|bool $nsfw = false, string $imagePath, string $userId): bool
+    public function addPost(string $title, string $content, string $communityId, string|bool $nsfw = false, string|null $imagePath = null, string $userId): bool
     {
         $title = DataFormatter::string($title);
         $content = DataFormatter::string($content);
@@ -116,6 +133,8 @@ class Post
             $this->error = $e;
             throw new Exception($e->getMessage());
         }
+
+        $this->postId = $this->sqids->encode([$this->db->insertId()]);
 
         return true;
     }

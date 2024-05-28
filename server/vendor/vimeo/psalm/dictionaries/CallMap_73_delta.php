@@ -116,6 +116,14 @@ return [
       'old' => ['resource[]|resource|false', 'ldap'=>'resource|resource[]', 'base'=>'array|string', 'filter'=>'array|string', 'attributes='=>'array', 'attributes_only='=>'int', 'sizelimit='=>'int', 'timelimit='=>'int', 'deref='=>'int'],
       'new' => ['resource[]|resource|false', 'ldap'=>'resource|resource[]', 'base'=>'array|string', 'filter'=>'array|string', 'attributes='=>'array', 'attributes_only='=>'int', 'sizelimit='=>'int', 'timelimit='=>'int', 'deref='=>'int', 'controls='=>'array'],
     ],
+    'mkdir' => [
+        'old' => ['bool', 'directory'=>'string', 'permissions='=>'int', 'recursive='=>'bool', 'context='=>'resource'],
+        'new' => ['bool', 'directory'=>'string', 'permissions='=>'int', 'recursive='=>'bool', 'context='=>'null|resource'],
+    ],
+    'session_get_cookie_params' => [
+        'old' => ['array{lifetime:?int,path:?string,domain:?string,secure:?bool,httponly:?bool}'],
+        'new' => ['array{lifetime:?int,path:?string,domain:?string,secure:?bool,httponly:?bool,samesite:?string}'],
+    ]
   ],
   'removed' => [
   ],

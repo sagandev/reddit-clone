@@ -123,7 +123,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                 throw new UnexpectedValueException('Anonymous enums are not allowed');
             }
 
-            $fq_class_name = self::getAnonymousClassName($class, $source->getFilePath());
+            $fq_class_name = self::getAnonymousClassName($class, $source->getAliases(), $source->getFilePath());
         }
 
         parent::__construct($class, $source, $fq_class_name);
@@ -137,10 +137,25 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
     }
 
     /** @return non-empty-string */
-    public static function getAnonymousClassName(PhpParser\Node\Stmt\Class_ $class, string $file_path): string
-    {
-        return preg_replace('/[^A-Za-z0-9]/', '_', $file_path)
-            . '_' . $class->getLine() . '_' . (int)$class->getAttribute('startFilePos');
+    public static function getAnonymousClassName(
+        PhpParser\Node\Stmt\Class_ $class,
+        Aliases $aliases,
+        string $file_path
+    ): string {
+        $class_name = preg_replace('/[^A-Za-z0-9]/', '_', $file_path)
+            . '_' . $class->getLine()
+            . '_' . (int)$class->getAttribute('startFilePos');
+
+        $fq_class_name = Type::getFQCLNFromString(
+            $class_name,
+            $aliases,
+        );
+
+        if ($fq_class_name === '') {
+            throw new LogicException('Invalid class name, should never happen');
+        }
+
+        return $fq_class_name;
     }
 
     public function analyze(
@@ -855,7 +870,12 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                 $property_type = $property_storage->type;
 
                 if (!$property_type->isMixed()
-                    && !$property_storage->is_promoted
+                    && (!$property_storage->is_promoted
+                        || (strtolower($fq_class_name) !== strtolower($property_class_name)
+                            && isset($storage->declaring_method_ids['__construct'])
+                            && strtolower(
+                                $storage->declaring_method_ids['__construct']->fq_class_name,
+                            ) === strtolower($fq_class_name)))
                     && !$property_storage->has_default
                     && !($property_type->isNullable() && $property_type->from_docblock)
                 ) {
@@ -866,7 +886,13 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                     ]);
                 }
             } else {
-                if (!$property_storage->has_default && !$property_storage->is_promoted) {
+                if (!$property_storage->has_default
+                    && (!$property_storage->is_promoted
+                        || (strtolower($fq_class_name) !== strtolower($property_class_name)
+                            && isset($storage->declaring_method_ids['__construct'])
+                            && strtolower(
+                                $storage->declaring_method_ids['__construct']->fq_class_name,
+                            ) === strtolower($fq_class_name)))) {
                     $property_type = new Union([new TMixed()], [
                         'initialized' => false,
                         'from_property' => true,
@@ -931,7 +957,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                     $stmts,
                     static fn($stmt): bool => $stmt instanceof PhpParser\Node\Stmt\Property
                         && isset($stmt->props[0]->name->name)
-                        && $stmt->props[0]->name->name === $property_name
+                        && $stmt->props[0]->name->name === $property_name,
                 );
 
                 $suppressed = [];
@@ -1080,6 +1106,13 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
 
             if ($property->is_static) {
                 continue;
+            }
+
+            if ($property->is_promoted
+                && strtolower($property_class_name) !== $fq_class_name_lc
+                && isset($storage->declaring_method_ids['__construct'])
+                && strtolower($storage->declaring_method_ids['__construct']->fq_class_name) === $fq_class_name_lc) {
+                $property_is_initialized = false;
             }
 
             if ($property->has_default || $property_is_initialized) {

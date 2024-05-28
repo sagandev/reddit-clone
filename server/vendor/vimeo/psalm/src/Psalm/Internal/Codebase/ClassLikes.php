@@ -1599,7 +1599,7 @@ final class ClassLikes
                 $storage->constants,
                 static fn(ClassConstantStorage $constant): bool => $constant->type
                     && ($constant->visibility === ClassLikeAnalyzer::VISIBILITY_PUBLIC
-                        || $constant->visibility === ClassLikeAnalyzer::VISIBILITY_PROTECTED)
+                        || $constant->visibility === ClassLikeAnalyzer::VISIBILITY_PROTECTED),
             );
         }
 
@@ -1751,6 +1751,12 @@ final class ClassLikes
 
                         if ($codebase->classImplements($classlike_storage->name, 'Serializable')
                             && ($method_name === 'serialize' || $method_name === 'unserialize')
+                        ) {
+                            continue;
+                        }
+
+                        if ($codebase->classImplements($classlike_storage->name, 'JsonSerializable')
+                            && ($method_name === 'jsonserialize')
                         ) {
                             continue;
                         }
@@ -2410,7 +2416,7 @@ final class ClassLikes
             fn(ClassConstantStorage $resolved_constant) => $this->filterConstantNameByVisibility(
                 $resolved_constant,
                 $visibility,
-            )
+            ),
         );
 
         if ($filtered_constants_by_visibility === []) {

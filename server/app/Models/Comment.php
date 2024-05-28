@@ -3,9 +3,11 @@
 namespace App\Models;
 
 require __DIR__ . '/../../vendor/autoload.php';
+
 use App\Helper\DataFormatter;
 use Exception;
 use Sqids\Sqids;
+
 class Comment
 {
     public $db;
@@ -15,7 +17,7 @@ class Comment
     public function __construct()
     {
         $this->db = new Database();
-        $this->sqids = new Sqids(minLength:12, alphabet: $_ENV['SQIDS_ALPHA']);
+        $this->sqids = new Sqids(minLength: 12, alphabet: $_ENV['SQIDS_ALPHA']);
     }
 
     public function addComment(string $content, string $postId, string $userId)

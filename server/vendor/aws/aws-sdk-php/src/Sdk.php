@@ -14,8 +14,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionAccount(array $args = [])
  * @method \Aws\Acm\AcmClient createAcm(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionAcm(array $args = [])
- * @method \Aws\AlexaForBusiness\AlexaForBusinessClient createAlexaForBusiness(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionAlexaForBusiness(array $args = [])
  * @method \Aws\Amplify\AmplifyClient createAmplify(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionAmplify(array $args = [])
  * @method \Aws\AmplifyBackend\AmplifyBackendClient createAmplifyBackend(array $args = [])
@@ -154,6 +152,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionCodeCatalyst(array $args = [])
  * @method \Aws\CodeCommit\CodeCommitClient createCodeCommit(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCodeCommit(array $args = [])
+ * @method \Aws\CodeConnections\CodeConnectionsClient createCodeConnections(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionCodeConnections(array $args = [])
  * @method \Aws\CodeDeploy\CodeDeployClient createCodeDeploy(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCodeDeploy(array $args = [])
  * @method \Aws\CodeGuruProfiler\CodeGuruProfilerClient createCodeGuruProfiler(array $args = [])
@@ -196,6 +196,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionConnectParticipant(array $args = [])
  * @method \Aws\ConnectWisdomService\ConnectWisdomServiceClient createConnectWisdomService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionConnectWisdomService(array $args = [])
+ * @method \Aws\ControlCatalog\ControlCatalogClient createControlCatalog(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionControlCatalog(array $args = [])
  * @method \Aws\ControlTower\ControlTowerClient createControlTower(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionControlTower(array $args = [])
  * @method \Aws\CostExplorer\CostExplorerClient createCostExplorer(array $args = [])
@@ -220,6 +222,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionDataZone(array $args = [])
  * @method \Aws\DatabaseMigrationService\DatabaseMigrationServiceClient createDatabaseMigrationService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDatabaseMigrationService(array $args = [])
+ * @method \Aws\Deadline\DeadlineClient createDeadline(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionDeadline(array $args = [])
  * @method \Aws\Detective\DetectiveClient createDetective(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDetective(array $args = [])
  * @method \Aws\DevOpsGuru\DevOpsGuruClient createDevOpsGuru(array $args = [])
@@ -320,8 +324,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionHealth(array $args = [])
  * @method \Aws\HealthLake\HealthLakeClient createHealthLake(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionHealthLake(array $args = [])
- * @method \Aws\Honeycode\HoneycodeClient createHoneycode(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionHoneycode(array $args = [])
  * @method \Aws\IVS\IVSClient createIVS(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIVS(array $args = [])
  * @method \Aws\IVSRealTime\IVSRealTimeClient createIVSRealTime(array $args = [])
@@ -358,8 +360,6 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionIoTFleetWise(array $args = [])
  * @method \Aws\IoTJobsDataPlane\IoTJobsDataPlaneClient createIoTJobsDataPlane(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIoTJobsDataPlane(array $args = [])
- * @method \Aws\IoTRoboRunner\IoTRoboRunnerClient createIoTRoboRunner(array $args = [])
- * @method \Aws\MultiRegionClient createMultiRegionIoTRoboRunner(array $args = [])
  * @method \Aws\IoTSecureTunneling\IoTSecureTunnelingClient createIoTSecureTunneling(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionIoTSecureTunneling(array $args = [])
  * @method \Aws\IoTSiteWise\IoTSiteWiseClient createIoTSiteWise(array $args = [])
@@ -606,6 +606,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionRoute53(array $args = [])
  * @method \Aws\Route53Domains\Route53DomainsClient createRoute53Domains(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionRoute53Domains(array $args = [])
+ * @method \Aws\Route53Profiles\Route53ProfilesClient createRoute53Profiles(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionRoute53Profiles(array $args = [])
  * @method \Aws\Route53RecoveryCluster\Route53RecoveryClusterClient createRoute53RecoveryCluster(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionRoute53RecoveryCluster(array $args = [])
  * @method \Aws\Route53RecoveryControlConfig\Route53RecoveryControlConfigClient createRoute53RecoveryControlConfig(array $args = [])
@@ -702,6 +704,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionSynthetics(array $args = [])
  * @method \Aws\Textract\TextractClient createTextract(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionTextract(array $args = [])
+ * @method \Aws\TimestreamInfluxDB\TimestreamInfluxDBClient createTimestreamInfluxDB(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionTimestreamInfluxDB(array $args = [])
  * @method \Aws\TimestreamQuery\TimestreamQueryClient createTimestreamQuery(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionTimestreamQuery(array $args = [])
  * @method \Aws\TimestreamWrite\TimestreamWriteClient createTimestreamWrite(array $args = [])
@@ -763,7 +767,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.300.0';
+    const VERSION = '3.307.1';
 
     /** @var array Arguments for creating clients */
     private $args;

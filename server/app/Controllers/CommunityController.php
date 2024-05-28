@@ -6,6 +6,9 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Models\Community;
 use App\Http\Auth;
+use App\Models\File;
+use App\Helper\Validator;
+
 
 class CommunityController
 {
@@ -25,8 +28,8 @@ class CommunityController
             case 'GET':
                 $params = Request::getURI();
                 // 2 = PostId index in params array
-                if(!array_key_exists(2, $params['path'])) {
-                    if(!array_key_exists("search", $params['query'])) {
+                if (!array_key_exists(2, $params['path'])) {
+                    if (!array_key_exists("search", $params['query'])) {
                         $communities = $this->community->getTopCommunities();
                     } else {
                         $search = $params['query']['search'];
@@ -39,27 +42,57 @@ class CommunityController
                 }
                 break;
             case 'POST':
-
-                if(!Auth::verify()) {
-                    Response::send(401, 'Missing authentication. Access not granted');
+                $params = Request::getURI();
+                $csrf = Request::getHeader('X-CSRF-TOKEN');
+                // $validate = Validator::csrfValidate($csrf);
+                // if (!$validate) {
+                //     Response::send(403, 'Forbidden');
+                //     exit;
+                // }
+                if (!Auth::verify()) {
+                    Response::send(401, 'Missing authentication.');
                     exit;
                 }
-
-                if (empty($data['name']) || !is_bool($data['nsfw'])) {
-                    Response::send(400, 'Missing parameters', $data);
-                    exit;
-                }
-
                 $user = Auth::decode();
+                if (!array_key_exists(2, $params['path'])) {
+                    if (empty($data['input']['name']) || empty($data['input']['description']) || empty($data['input']['nsfw']) || ($data['input']['nsfw'] != 'false' && $data['input']['nsfw'] != 'true')) {
+                        Response::send(400, 'Missing parameters', $data);
+                        exit;
+                    }
 
-                $community = $this->community->createCommunity($data['name'], $data['description'], $user['data']['userId'], $data['nsfw']);
+                    $user = Auth::decode();
+                    $fileName = null;
+                    if ($data['files']['file']) {
+                        $file = new File('/communities/', $data['files']['file']);
 
-                Response::send(200, 'success');
+                        if (!$file) {
+                            Response::send($file->httpStatus, $file->error);
+                            exit;
+                        }
+                        $fileName = $file->name;
+                    }
+                    $community = $this->community->createCommunity($data['input']['name'], $data['input']['description'], $data['input']['nsfw'], $fileName, $user->sub->userId);
+
+                    Response::send(200, 'success');
+                } elseif ($params['path'][2] == "join") {
+                    if (empty($data['communityId'])) {
+                        Response::send(400, "Missing parameters");
+                        exit;
+                    }
+
+                    $join = $this->community->join($data['communityId'], $user->sub->userId);
+
+                    if(!$join) {
+                        Response::send($this->community->httpStatus, $this->community->error);
+                        exit;
+                    }
+
+                    Response::send(200, "OK");
+                }
                 break;
             default:
                 Response::send(405, 'error');
                 break;
         }
-
     }
 }
