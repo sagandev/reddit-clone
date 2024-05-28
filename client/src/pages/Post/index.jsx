@@ -14,7 +14,6 @@ import {
   Textarea,
   Pagination,
   Center,
-  Burger, Group, Skeleton
 } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks';
 import Login from "../../components/Login";
@@ -28,6 +27,7 @@ import { IconSend, IconLink, IconX, IconChecks } from "@tabler/icons-react";
 import Loading from "../../components/Loading";
 import Sidebar from '../../components/Sidebar';
 import {notifications} from '@mantine/notifications';
+import config from "../config";
 const commentsPaginated = (comments) => {
   const dataOnSinglePage = 10;
   const pages = Math.ceil(comments.length / dataOnSinglePage);
@@ -68,7 +68,7 @@ export default function PostPage() {
       setIsLogged(true);
     }
     axios
-      .get(`http://localhost:3000/posts/${params.post_id}`, {
+      .get(`${config.apiServer}/posts/${params.post_id}`, {
         headers: auth ? { Authorization: "Bearer " + auth } : null,
       })
       .then((res) => {
@@ -78,7 +78,7 @@ export default function PostPage() {
         console.log(res.data.data);
         axios
           .get(
-            `http://localhost:3000/communities/${res.data.data.post.community_id}`
+            `${config.apiServer}/communities/${res.data.data.post.community_id}`
           )
           .then((res) => {
             setCommunity(res.data.data);
@@ -106,7 +106,7 @@ export default function PostPage() {
     const token = cookies.get("CSRF_TOKEN");
     axios
       .post(
-        "http://localhost:3000/comments",
+        `${config.apiServer}/comments`,
         {
           content: values.content,
           postId: post.post.id,
@@ -146,7 +146,7 @@ export default function PostPage() {
     if (!auth) return;
     console.log(community)
     const token = cookies.get("CSRF_TOKEN");
-    axios.post("http://localhost:3000/communities/join", {
+    axios.post(`${config.apiServer}/communities/join`, {
       communityId: community.community.id,
     }, {
       withCredentials: true,
@@ -315,7 +315,7 @@ export default function PostPage() {
                         </Flex>
                         <Flex direction="column">
                           <CopyButton
-                            value={`http://192.168.0.15:5172/r/${post.community_name}`}
+                            value={`${config.clientServer}/r/${post.community_name}`}
                           >
                             {({ copied, copy }) => (
                               <Button

@@ -20,12 +20,13 @@ import { notifications } from "@mantine/notifications";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import config from "../config";
 const cookies = new Cookies();
 const handleDelete = (comment) => {
   console.log(comment);
   const auth = cookies.get("auth");
   axios
-    .delete(`http://localhost:3000/comments/${comment.id}`, {
+    .delete(`${config.apiServer}/comments/${comment.id}`, {
       withCredentials: true,
       headers: { Authorization: "Bearer " + auth },
     })
@@ -62,8 +63,8 @@ export default function Comment({ comment, user }) {
             <Avatar
               component="a"
               target="_blank"
-              src={`http://cdn.sagandev.local/${
-                comment.avatar ? "/users/" + comment.avatar : "Default_avatar_profile.jpg"
+              src={`${config.cdn}${
+                comment.avatar ? "/users/" + comment.avatar : "/Default_avatar_profile.jpg"
               }`}
               alt="it's me"
               style={{ cursor: "pointer" }}

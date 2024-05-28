@@ -20,7 +20,8 @@ import { useDropzone } from "react-dropzone";
 import { IconRating18Plus, IconX, IconChecks } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import {notifications} from "@mantine/notifications"
+import {notifications} from "@mantine/notifications";
+import config from "../config";
 export default function Sidebar({ user, token }) {
   const [userCommunities, setUserCommunities] = useState([]);
   const [openModal, setOpenModal] = useState(false);
@@ -28,7 +29,7 @@ export default function Sidebar({ user, token }) {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/users/${user.user.username}/communities`)
+      .get(`${config.apiServer}/users/${user.user.username}/communities`)
       .then((res) => {
         setUserCommunities(res.data.data);
         console.log(res.data.data);
@@ -103,7 +104,7 @@ export default function Sidebar({ user, token }) {
     }
     const csrf = cookies.get("CSRF_TOKEN");
     axios
-      .post("http://localhost:3000/communities", form, {
+      .post(`${config.apiServer}/communities`, form, {
         withCredentials: true,
         headers: {
           Authorization: "Bearer " + token,
@@ -210,7 +211,7 @@ export default function Sidebar({ user, token }) {
                     target="_blank"
                     alt="it's me"
                     style={{ cursor: "pointer" }}
-                    src={"http://cdn.sagandev.local/communities/" + val.icon}
+                    src={`${config.cdn}/communities/` + val.icon}
                   />{" "}
                   r/{val.name}
                 </Flex>

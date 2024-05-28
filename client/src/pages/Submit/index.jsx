@@ -15,18 +15,14 @@ import {
   Tabs,
   Chip,
   Group,
-  Input,
   Textarea,
-  Button,
-  InputDescription,
+  Button
 } from "@mantine/core";
 import { useDropzone } from "react-dropzone";
 import {
   IconPhoto,
   IconMessageCircle,
-  IconSettings,
   IconX,
-  IconUpload,
   IconChecks
 } from "@tabler/icons-react";
 import Login from "../../components/Login";
@@ -36,6 +32,7 @@ import { Cookies } from "react-cookie";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
+import config from "../config";
 export default function SubmitPage() {
   const [openedLogin, toggleLogin] = useState(false);
   const [openedSignup, toggleSignup] = useState(false);
@@ -60,7 +57,7 @@ export default function SubmitPage() {
     const userS = JSON.parse(localStorage.getItem("user"));
     if (userS) setUser(userS);
     axios
-      .get(`http://localhost:3000/users/${userS.user.username}/communities`)
+      .get(`${config.apiServer}/users/${userS.user.username}/communities`)
       .then((res) => {
         setCommunities(res.data.data);
         console.log(res.data.data);
@@ -126,7 +123,7 @@ export default function SubmitPage() {
     const auth = cookies.get("auth");
     const token = cookies.get("CSRF_TOKEN");
     axios
-      .post("http://localhost:3000/posts", form, {
+      .post(`${config.apiServer}/posts`, form, {
         withCredentials: true,
         headers: {
           Authorization: "Bearer " + auth,

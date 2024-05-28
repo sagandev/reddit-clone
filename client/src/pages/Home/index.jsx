@@ -23,6 +23,7 @@ import { Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import Sidebar from "../../components/Sidebar";
+import config from "../config";
 export default function HomePage() {
   const [openedLogin, toggleLogin] = useState(false);
   const [openedSignup, toggleSignup] = useState(false);
@@ -40,7 +41,7 @@ export default function HomePage() {
     const sessionId = cookies.get("sessionId");
 
     axios
-      .get(`http://localhost:3000/posts?sort=created_at&sessionId=${sessionId}`)
+      .get(`${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}`)
       .then((res) => {
         setPosts(res.data.data.posts);
         setPostsCount(res.data.data.posts.length);
@@ -53,7 +54,7 @@ export default function HomePage() {
       });
 
     axios
-      .get("http://localhost:3000/communities")
+      .get(`${config.apiServer}/communities`)
       .then((res) => {
         setCommunities(res.data.data);
         console.log(res.data.data)
@@ -77,7 +78,7 @@ export default function HomePage() {
     console.log(postsCount);
     axios
       .get(
-        `http://localhost:3000/posts?sort=created_at&sessionId=${sessionId}&fromPost=${postsCount}`
+        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&fromPost=${postsCount}`
       )
       .then((res) => {
         setPosts([...posts, ...res.data.data.posts]);

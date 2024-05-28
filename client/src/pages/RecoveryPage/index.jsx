@@ -2,9 +2,6 @@ import {
   TextInput,
   Button,
   Group,
-  Box,
-  PasswordInput,
-  Anchor,
   Flex,
   Text
 } from "@mantine/core";
@@ -12,8 +9,8 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX, IconChecks } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
-import { useTimeout } from "@mantine/hooks";
 import axios from "axios";
+import config from "../config";
 export default function RecoveryPage() {
   const cookies = new Cookies();
   const form = useForm({
@@ -30,7 +27,7 @@ export default function RecoveryPage() {
     const token = cookies.get("CSRF_TOKEN");
     if (!token || !values) return;
 
-    axios.post("http://localhost:3000/auth/password-recovery", {
+    axios.post(`${config.apiServer}/auth/password-recovery`, {
       email: values.email
     }, {
       withCredentials: true,

@@ -20,6 +20,7 @@ import {
   IconLink,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import config from "../config";
 export default function PostBox({ post }) {
   const navigate = useNavigate();
   const clipboard = useClipboard({ timeout: 500 });
@@ -35,7 +36,7 @@ export default function PostBox({ post }) {
                 alt="it's me"
                 style={{ cursor: "pointer" }}
                 onClick={() => navigate(`/r/${post.community_name}`)}
-                src={"http://cdn.sagandev.local/communities/" + post.community_icon}
+                src={config.cdn + "/communities/" + post.community_icon}
               />
               <Group
                 gap="xs"
@@ -146,7 +147,7 @@ export default function PostBox({ post }) {
                     color="gray"
                     onClick={() =>
                       clipboard.copy(
-                        `http://192.168.0.15:5173/r/${post.community_name}/${post.id}`
+                        `${config.clientServer}/r/${post.community_name}/${post.id}`
                       )
                     }
                     w="100%"
@@ -162,7 +163,7 @@ export default function PostBox({ post }) {
         {post.imagePath ? (
           <Image
             radius="md"
-            src={`http://cdn.sagandev.local/posts/${post.imagePath}`}
+            src={`${config.cdn}/posts/${post.imagePath}`}
             w={200}
             style={{ filter: post.nsfw ? "blur(7px)" : null }}
           />

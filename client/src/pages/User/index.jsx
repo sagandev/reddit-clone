@@ -3,14 +3,11 @@ import { useEffect, useState } from "react";
 import {
   AppShell,
   Modal,
-  rem,
   Text,
   Flex,
   Grid,
   Container,
-  SegmentedControl,
   Center,
-  Loader,
   Button,
   Image,
   Avatar,
@@ -27,6 +24,7 @@ import UserCard from "../../components/UserCard";
 import { Cookies } from "react-cookie";
 import Loading from "../../components/Loading";
 import Sidebar from "../../components/Sidebar";
+import config from "../config";
 export default function UserPage() {
   const params = useParams();
   const [openedLogin, toggleLogin] = useState(false);
@@ -42,12 +40,12 @@ export default function UserPage() {
     const sessionId = cookies.get("sessionId");
     axios
       .get(
-        `http://localhost:3000/posts?sort=created_at&sessionId=${sessionId}&userName=${params.username}`
+        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&userName=${params.username}`
       )
       .then((res) => {
         setPosts(res.data.data.posts);
       });
-    axios.get(`http://localhost:3000/users/${params.username}`).then((res) => {
+    axios.get(`${config.apiServer}/users/${params.username}`).then((res) => {
       setUser(res.data.data);
       console.log(res.data.data);
       setLoading(false);
@@ -115,10 +113,10 @@ export default function UserPage() {
                     />
                     <Flex direction="row" gap={5}>
                       <Avatar
-                        src={`http://cdn.sagandev.local/${
+                        src={`${config.cdn}${
                           user.avatar
                             ? "/users/" + user.avatar
-                            : "Default_avatar_profile.jpg"
+                            : "/Default_avatar_profile.jpg"
                         }`}
                         size="xl"
                         style={{ transform: "translate3d(+25%, -50%, 0)" }}
@@ -160,7 +158,7 @@ export default function UserPage() {
             ) : (
               <>
                 <Text>This user not exists</Text>{" "}
-                <Anchor href="http://localhost:5173">go back home</Anchor>
+                <Anchor href={config.clientServer}>go back home</Anchor>
               </>
             )}
           </AppShell.Main>

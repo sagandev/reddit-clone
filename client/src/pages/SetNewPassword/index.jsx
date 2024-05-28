@@ -1,10 +1,7 @@
 import {
-  TextInput,
   Button,
   Group,
-  Box,
   PasswordInput,
-  Anchor,
   Flex,
   Text,
 } from "@mantine/core";
@@ -13,9 +10,9 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX, IconChecks } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
-import { useTimeout } from "@mantine/hooks";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import config from "../config";
 export default function SetPasswordPage() {
   const cookies = new Cookies();
   const navigate = useNavigate();
@@ -51,7 +48,7 @@ export default function SetPasswordPage() {
 
     axios
       .post(
-        "http://localhost:3000/users/set-password",
+        `${config.apiServer}/users/set-password`,
         {
           email: email,
           password: values.password,

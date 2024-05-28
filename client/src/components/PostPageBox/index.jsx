@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import config from "../config";
 export default function PostPageBox({ post, isLogged }) {
   const [upvote, setUpvote] = useState(post.userUpvote);
   const [downvote, setDownvote] = useState(post.userDownvote);
@@ -34,7 +35,7 @@ export default function PostPageBox({ post, isLogged }) {
     if (!auth) return;
     const token = cookies.get("CSRF_TOKEN");
     axios.post(
-      "http://localhost:3000/posts/upvote",
+      `${config.apiServer}/posts/upvote`,
       {
         postId: post.id,
       },
@@ -64,7 +65,7 @@ export default function PostPageBox({ post, isLogged }) {
     if (!auth) return;
     const token = localStorage.getItem("csrf_token");
     axios.post(
-      "http://localhost:3000/posts/downvote",
+      `${config.apiServer}/posts/downvote`,
       {
         postId: post.id,
       },
@@ -95,8 +96,8 @@ export default function PostPageBox({ post, isLogged }) {
           <Avatar
             component="a"
             target="_blank"
-            src={`http://cdn.sagandev.local/${
-              post.avatar ? "/users/" + post.avatar : "Default_avatar_profile.jpg"
+            src={`${config.cdn}${
+              post.avatar ? "/users/" + post.avatar : "/Default_avatar_profile.jpg"
             }`}
             alt="it's me"
             style={{ cursor: "pointer" }}
@@ -148,7 +149,7 @@ export default function PostPageBox({ post, isLogged }) {
         {post?.imagePath ? (
           <Image
             radius="md"
-            src={`http://cdn.sagandev.local/posts/${post.imagePath}`}
+            src={`${config.cdn}/posts/${post.imagePath}`}
           />
         ) : null}
         <Flex
@@ -205,7 +206,7 @@ export default function PostPageBox({ post, isLogged }) {
               </Popover.Target>
               <Popover.Dropdown>
                 <CopyButton
-                  value={`http://192.168.0.15:5172/r/${post.community_name}/${post.id}`}
+                  value={`${config.clientServer}/r/${post.community_name}/${post.id}`}
                 >
                   {({ copied, copy }) => (
                     <Button

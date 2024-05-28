@@ -22,6 +22,7 @@ import {
 } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
+import config from "../config";
 export default function Navbar({
   isLogged,
   openedLogin,
@@ -38,7 +39,7 @@ export default function Navbar({
   const [searchData, setSearchData] = useState([]);
   const sendReq = () => {
     axios
-      .get(`http://localhost:3000/communities?search=${search}`)
+      .get(`${config.apiServer}/communities?search=${search}`)
       .then((res) => {
         console.log(res.data.data);
         const data = res.data.data;
@@ -112,7 +113,7 @@ export default function Navbar({
               </Button>
               <Menu shadow="md" width={200}>
                 <Menu.Target>
-                  <Avatar radius="xl" src={"http://cdn.sagandev.local/users/" + user.user.avatar} style={{ cursor: "pointer" }} />
+                  <Avatar radius="xl" src={config.cdn + "/users/" + user.user.avatar} style={{ cursor: "pointer" }} />
                 </Menu.Target>
 
                 <Menu.Dropdown>

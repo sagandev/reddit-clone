@@ -12,6 +12,7 @@ import { IconX, IconChecks } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
 import { useTimeout } from "@mantine/hooks";
 import axios from "axios";
+import config from "../config";
 export default function LoginForm({ toggleLogin, openedLogin }) {
   const cookies = new Cookies();
   const form = useForm({
@@ -44,7 +45,7 @@ export default function LoginForm({ toggleLogin, openedLogin }) {
     const token = cookies.get("CSRF_TOKEN");
     axios
       .post(
-        "http://localhost:3000/auth",
+        `${config.apiServer}/auth`,
         {
           email: values.email,
           password: values.password,
@@ -114,7 +115,7 @@ export default function LoginForm({ toggleLogin, openedLogin }) {
           radius="lg"
         />
         <Group justify="space-between" mt="md">
-          <Anchor href="http://localhost:5173/recovery/" c="dimmed" size="xs">
+          <Anchor href={`${config.clientServer}/recovery/`} c="dimmed" size="xs">
             Forgot your password?
           </Anchor>
           <Button type="submit" radius="lg">

@@ -3,40 +3,23 @@ import { useEffect, useState } from "react";
 import {
   AppShell,
   Modal,
-  rem,
   Text,
   Flex,
-  Grid,
   Container,
-  SegmentedControl,
-  Center,
-  Loader,
-  Button,
-  Image,
-  Avatar,
-  Divider,
-  Anchor,
-  Textarea,
-  Group,
-  FileInput,
+  Button
 } from "@mantine/core";
 import { useNavigate, useParams } from "react-router-dom";
 import Login from "../../components/Login";
 import Signup from "../../components/Signup";
-import PostBox from "../../components/Post";
 import Navbar from "../../components/Navbar";
-import UserCard from "../../components/UserCard";
 import { Cookies } from "react-cookie";
 import { useDropzone } from "react-dropzone";
 import {
-  IconPhoto,
-  IconMessageCircle,
-  IconSettings,
   IconX,
-  IconUpload,
   IconChecks
 } from "@tabler/icons-react";
 import { notifications } from '@mantine/notifications';
+import config from "../config";
 export default function UserSettings() {
   const params = useParams();
   const [openedLogin, toggleLogin] = useState(false);
@@ -57,7 +40,7 @@ export default function UserSettings() {
       console.log(userS);
       if (userS) setUserLocal(userS);
 
-      axios.get(`http://localhost:3000/users/${userS.user.username}`).then((res) => {
+      axios.get(`${config.apiServer}/users/${userS.user.username}`).then((res) => {
         setUser(res.data.data);
         setUsername(res.data.data.username)
       });
@@ -112,7 +95,7 @@ export default function UserSettings() {
     const auth = cookies.get('auth');
     if (!auth) return;
     const token = cookies.get("CSRF_TOKEN");
-    axios.post("http://localhost:3000/users/settings/avatar", form, {withCredentials: true, headers: {
+    axios.post(`${config.apiServer}/users/settings/avatar`, form, {withCredentials: true, headers: {
         'Authorization': "Bearer " + auth,
         'X-CSRF-TOKEN': token
     }}).then((res) => {

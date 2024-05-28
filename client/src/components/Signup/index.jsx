@@ -13,6 +13,7 @@ import { useForm } from "@mantine/form";
 import axios from "axios";
 import {Cookies} from 'react-cookie';
 import { notifications } from "@mantine/notifications";
+import config from "../config";
 export default function Signup() {
   const cookies = new Cookies();
   const form = useForm({
@@ -42,7 +43,7 @@ export default function Signup() {
     if(!value) return;
     const token = cookies.get("CSRF_TOKEN");
     axios
-      .post("http://localhost:3000/users", {
+      .post(`${config.apiServer}/users`, {
         email: values.email,
         username: values.username,
         password: values.password,

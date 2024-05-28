@@ -24,6 +24,7 @@ import CommunitySmallCard from "../../components/Community";
 import Navbar from "../../components/Navbar";
 import { Cookies } from "react-cookie";
 import Loading from "../../components/Loading";
+import config from "../config";
 export default function CommunityPage() {
   const params = useParams();
   const [openedLogin, toggleLogin] = useState(false);
@@ -38,13 +39,13 @@ export default function CommunityPage() {
     const sessionId = cookies.get("sessionId");
     axios
       .get(
-        `http://localhost:3000/posts?sort=created_at&sessionId=${sessionId}&communityName=${params.community_name}`
+        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&communityName=${params.community_name}`
       )
       .then((res) => {
         setPosts(res.data.data.posts);
         axios
           .get(
-            `http://localhost:3000/communities/${params.community_name}`
+            `${config.apiServer}/communities/${params.community_name}`
           )
           .then((res) => {
             setCommunity(res.data.data);
@@ -103,7 +104,9 @@ export default function CommunityPage() {
                 />
                 <Flex direction="row" gap={5}>
                   <Avatar
-                    src="http://cdn.sagandev.local/communities/community.png"
+                    src={`${config.cdn}${
+                      community.icon ? "/communities/" + community.icon : "/community.png"
+                    }`}
                     size="xl"
                     style={{ transform: "translate3d(+25%, -50%, 0)" }}
                     mr={30}
