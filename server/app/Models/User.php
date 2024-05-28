@@ -162,7 +162,7 @@ class User
         $username = DataFormatter::string($username);
 
         try {
-            $this->db->prepare("SELECT com.id, com.name FROM communities AS com INNER JOIN communities_members AS cm ON cm.community_id = com.id INNER JOIN users ON users.id = cm.user_id WHERE users.username = :username", [':username' => $username]);
+            $this->db->prepare("SELECT com.id, com.name, com.icon FROM communities AS com INNER JOIN communities_members AS cm ON cm.community_id = com.id INNER JOIN users ON users.id = cm.user_id WHERE users.username = :username", [':username' => $username]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());

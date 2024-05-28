@@ -210,6 +210,7 @@ export default function Sidebar({ user, token }) {
                     target="_blank"
                     alt="it's me"
                     style={{ cursor: "pointer" }}
+                    src={"http://cdn.sagandev.local/communities/" + val.icon}
                   />{" "}
                   r/{val.name}
                 </Flex>

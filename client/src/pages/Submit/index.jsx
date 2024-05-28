@@ -65,9 +65,6 @@ export default function SubmitPage() {
         setCommunities(res.data.data);
         console.log(res.data.data);
       });
-    console.log([
-      communities.map((val, i) => ({ value: val.id, label: val.name })),
-    ]);
   }, []);
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -138,7 +135,6 @@ export default function SubmitPage() {
         
       })
       .then((res) => {
-        console.log(res);
         notifications.show({
           title: "Post created successfully",
           color: "green",
@@ -148,10 +144,18 @@ export default function SubmitPage() {
           icon: <IconChecks />,
         });
         const community_ = communities.find(el => el.id = community);
-        console.log(community_)
         setTimeout(() => {
           navigate(`/r/${community_.name}/${res.data.data}`);
         }, 2000)
+      }).catch(e => {
+        notifications.show({
+          title: "Post creating failed",
+          color: "red",
+          withBorder: true,
+          withCloseButton: false,
+          radius: "md",
+          icon: <IconX />,
+        });
       });
   };
   return (
