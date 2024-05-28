@@ -21,7 +21,7 @@ import { IconRating18Plus, IconX, IconChecks } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import {notifications} from "@mantine/notifications";
-import config from "../config";
+import config from  "../../config";
 export default function Sidebar({ user, token }) {
   const [userCommunities, setUserCommunities] = useState([]);
   const [openModal, setOpenModal] = useState(false);

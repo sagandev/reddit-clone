@@ -27,7 +27,7 @@ import { IconSend, IconLink, IconX, IconChecks } from "@tabler/icons-react";
 import Loading from "../../components/Loading";
 import Sidebar from '../../components/Sidebar';
 import {notifications} from '@mantine/notifications';
-import config from "../config";
+import config from  "../../config";
 const commentsPaginated = (comments) => {
   const dataOnSinglePage = 10;
   const pages = Math.ceil(comments.length / dataOnSinglePage);

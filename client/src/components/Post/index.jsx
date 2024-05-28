@@ -20,7 +20,7 @@ import {
   IconLink,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import config from "../config";
+import config from  "../../config";
 export default function PostBox({ post }) {
   const navigate = useNavigate();
   const clipboard = useClipboard({ timeout: 500 });

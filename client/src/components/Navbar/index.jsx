@@ -22,7 +22,7 @@ import {
 } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
-import config from "../config";
+import config from  "../../config";
 export default function Navbar({
   isLogged,
   openedLogin,

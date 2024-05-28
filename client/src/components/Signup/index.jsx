@@ -13,7 +13,7 @@ import { useForm } from "@mantine/form";
 import axios from "axios";
 import {Cookies} from 'react-cookie';
 import { notifications } from "@mantine/notifications";
-import config from "../config";
+import config from  "../../config";
 export default function Signup() {
   const cookies = new Cookies();
   const form = useForm({

@@ -10,9 +10,8 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { IconX, IconChecks } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
-import { useTimeout } from "@mantine/hooks";
 import axios from "axios";
-import config from "../config";
+import config from  "../../config";
 export default function LoginForm({ toggleLogin, openedLogin }) {
   const cookies = new Cookies();
   const form = useForm({

@@ -24,7 +24,7 @@ import UserCard from "../../components/UserCard";
 import { Cookies } from "react-cookie";
 import Loading from "../../components/Loading";
 import Sidebar from "../../components/Sidebar";
-import config from "../config";
+import config from  "../../config";
 export default function UserPage() {
   const params = useParams();
   const [openedLogin, toggleLogin] = useState(false);

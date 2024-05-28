@@ -24,7 +24,7 @@ import CommunitySmallCard from "../../components/Community";
 import Navbar from "../../components/Navbar";
 import { Cookies } from "react-cookie";
 import Loading from "../../components/Loading";
-import config from "../config";
+import config from  "../../config";
 export default function CommunityPage() {
   const params = useParams();
   const [openedLogin, toggleLogin] = useState(false);

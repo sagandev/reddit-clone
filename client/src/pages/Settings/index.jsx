@@ -19,7 +19,7 @@ import {
   IconChecks
 } from "@tabler/icons-react";
 import { notifications } from '@mantine/notifications';
-import config from "../config";
+import config from  "../../config";
 export default function UserSettings() {
   const params = useParams();
   const [openedLogin, toggleLogin] = useState(false);

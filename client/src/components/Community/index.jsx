@@ -1,6 +1,6 @@
 import { Group, Text, Avatar, Stack } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import config from "../config";
+import config from  "../../config";
 export default function CommunitySmallCard({ data }) {
   const navigate = useNavigate();
   return (

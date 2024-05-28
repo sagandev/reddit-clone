@@ -5,7 +5,7 @@ import { Cookies } from "react-cookie";
 import { IconCheck, IconX } from "@tabler/icons-react";
 import { Flex, Text, Anchor } from "@mantine/core";
 import Loading from "../../components/Loading";
-import config from "../config";
+import config from "../../config";
 export default function ActivateAccountPage() {
   const [searchParams] = useSearchParams();
   const [active, setActive] = useState(false);

@@ -20,7 +20,7 @@ import { notifications } from "@mantine/notifications";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import config from "../config";
+import config from  "../../config";
 const cookies = new Cookies();
 const handleDelete = (comment) => {
   console.log(comment);

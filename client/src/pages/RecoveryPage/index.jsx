@@ -10,7 +10,7 @@ import { notifications } from "@mantine/notifications";
 import { IconX, IconChecks } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
-import config from "../config";
+import config from  "../../config";
 export default function RecoveryPage() {
   const cookies = new Cookies();
   const form = useForm({

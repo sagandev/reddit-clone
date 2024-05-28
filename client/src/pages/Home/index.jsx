@@ -23,7 +23,7 @@ import { Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import Sidebar from "../../components/Sidebar";
-import config from "../config";
+import config from  "../../config";
 export default function HomePage() {
   const [openedLogin, toggleLogin] = useState(false);
   const [openedSignup, toggleSignup] = useState(false);

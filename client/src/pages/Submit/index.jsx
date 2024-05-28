@@ -32,7 +32,7 @@ import { Cookies } from "react-cookie";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
-import config from "../config";
+import config from  "../../config";
 export default function SubmitPage() {
   const [openedLogin, toggleLogin] = useState(false);
   const [openedSignup, toggleSignup] = useState(false);

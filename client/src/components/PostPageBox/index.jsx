@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import config from "../config";
+import config from  "../../config";
 export default function PostPageBox({ post, isLogged }) {
   const [upvote, setUpvote] = useState(post.userUpvote);
   const [downvote, setDownvote] = useState(post.userDownvote);

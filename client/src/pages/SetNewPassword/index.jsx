@@ -12,7 +12,7 @@ import { IconX, IconChecks } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import config from "../config";
+import config from  "../../config";
 export default function SetPasswordPage() {
   const cookies = new Cookies();
   const navigate = useNavigate();
