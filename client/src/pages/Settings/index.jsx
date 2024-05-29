@@ -108,6 +108,19 @@ export default function UserSettings() {
           radius: "lg",
           icon: <IconChecks />
       })
+
+      const user = userLocal;
+      user.user.avatar = res.data.data;
+      localStorage.setItem("user", JSON.stringify(user));
+    }).catch(e => {
+      notifications.show({
+        title: "Updating avatar failed",
+        color: 'red',
+        withBorder: true,
+        withCloseButton: false,
+        radius: "lg",
+        icon: <IconX />
+    })
     })
 }
   return (

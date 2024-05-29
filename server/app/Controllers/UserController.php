@@ -110,7 +110,7 @@ class UserController
                                 }
                                 $newName = $upload->name;
                                 $this->user->updateAvatar($user->sub->userId, $newName);
-                                Response::send(200, 'success');
+                                Response::send(200, 'success', $newName);
                                 break;
                             default:
                                 Response::send(404, 'Not found');
