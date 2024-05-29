@@ -138,6 +138,7 @@ export default function UserSettings() {
             toggleLogin={toggleLogin}
             openedSignup={openedSignup}
             toggleSignup={toggleSignup}
+            user={userLocal}
           />
         </AppShell.Header>
         <AppShell.Main>
