@@ -5,3 +5,5 @@ node_modules
 server/phpredis
 client/.env
 .env
+/client/src/config/
+client/src/config/
