@@ -39,7 +39,7 @@ export default function Navbar({
   const [searchData, setSearchData] = useState([]);
   const sendReq = () => {
     axios
-      .get(`${config.apiServer}/communities?search=${search}`)
+      .get(`${config.apiServer}/communities?search=${search}`, {withCredentials: true})
       .then((res) => {
         console.log(res.data.data);
         const data = res.data.data;

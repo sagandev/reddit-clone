@@ -1,5 +1,4 @@
 <?php
-session_start();
 $routes = __DIR__ . '/api/';
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header('Access-Control-Allow-Credentials: true');
@@ -7,10 +6,10 @@ header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS, PUT');
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){
-    header('Access-Control-Allow-Headers: Content-Type, Origin, Authorization, X-CSRF-TOKEN');
+    header('Access-Control-Allow-Headers: Content-Type, Origin, Authorization, X-CSRF-TOKEN, X-Requested-With');
     exit;
 }
-
+session_start();
 $URI = explode('/', $_SERVER['REQUEST_URI']);
 $enpoint = explode('?', $URI[1]);
 $URI_PART = $enpoint[0];

@@ -43,12 +43,12 @@ class CommunityController
                 break;
             case 'POST':
                 $params = Request::getURI();
-                $csrf = Request::getHeader('X-CSRF-TOKEN');
-                // $validate = Validator::csrfValidate($csrf);
-                // if (!$validate) {
-                //     Response::send(403, 'Forbidden');
-                //     exit;
-                // }
+                $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
+                $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                if (!$validate) {
+                    Response::send(403, 'Forbidden');
+                    exit;
+                }
                 if (!Auth::verify()) {
                     Response::send(401, 'Missing authentication.');
                     exit;

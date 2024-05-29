@@ -88,12 +88,12 @@ class PostController
                 break;
             case 'POST':
                 $params = Request::getURI();
-                $csrf = Request::getHeader('X-CSRF-TOKEN');
-                // $validate = Validator::csrfValidate($csrf);
-                // if (!$validate) {
-                //     Response::send(403, 'Forbidden');
-                //     exit;
-                // }
+                $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
+                $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                if (!$validate) {
+                    Response::send(403, 'Forbidden');
+                    exit;
+                }
                 if(array_key_exists(2, $params['path'])) {
                     $userId = null;
                     if(!Auth::verify()) {

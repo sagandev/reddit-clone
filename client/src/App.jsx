@@ -18,14 +18,16 @@ import { useEffect } from 'react';
 import { getCsrfToken } from './api';
 import SetPasswordPage from './pages/SetNewPassword';
 import ActivateAccountPage from './pages/ActivateAccount';
+import axios from 'axios';
 export default function App() {
   const cookies = new Cookies();
   useEffect(() => {
+    axios.defaults.withCredentials = true;
     const token = cookies.get("CSRF_TOKEN");
     if (!token) {
       const newToken = getCsrfToken().then(({data}) => {
         console.log(data)
-       cookies.set("CSRF_TOKEN", data.data, {sameSite: 'strict'})
+       cookies.set("CSRF_TOKEN", data.data)
       });
 
     }

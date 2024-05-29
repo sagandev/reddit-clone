@@ -40,7 +40,7 @@ export default function UserSettings() {
       console.log(userS);
       if (userS) setUserLocal(userS);
 
-      axios.get(`${config.apiServer}/users/${userS.user.username}`).then((res) => {
+      axios.get(`${config.apiServer}/users/${userS.user.username}`, {withCredentials: true}).then((res) => {
         setUser(res.data.data);
         setUsername(res.data.data.username)
       });

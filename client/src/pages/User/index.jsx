@@ -40,7 +40,7 @@ export default function UserPage() {
     const sessionId = cookies.get("sessionId");
     axios
       .get(
-        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&userName=${params.username}`
+        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&userName=${params.username}`, {withCredentials: true}
       )
       .then((res) => {
         setPosts(res.data.data.posts);

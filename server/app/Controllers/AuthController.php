@@ -64,11 +64,11 @@ class AuthController
                     }
                 } else {
                     $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
-                    // $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
-                    // if (!$validate) {
-                    //     Response::send(403, 'Forbidden');
-                    //     exit;
-                    // }
+                    $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                    if (!$validate) {
+                        Response::send(403, 'Forbidden');
+                        exit;
+                    }
                     if (empty($data['email']) || empty($data['password'])) {
                         Response::send(200, 'Missing parameters', $data);
                         exit;

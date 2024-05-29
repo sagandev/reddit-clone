@@ -33,13 +33,12 @@ class UserController
         switch ($method) {
             case 'POST':
                 $params = Request::getURI();
-                $csrf = Request::getHeader('X-CSRF-TOKEN');
-                // // $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
-                // $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
-                // if (!$validate) {
-                //     Response::send(403, 'Forbidden');
-                //     exit;
-                // }
+                $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
+                $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                if (!$validate) {
+                    Response::send(403, 'Forbidden');
+                    exit;
+                }
                 if (!array_key_exists(2, $params['path'])) {
                     if (empty($data['email']) || empty($data['password']) || empty($data['username'])) {
                         Response::send(400, 'Missing parameters');

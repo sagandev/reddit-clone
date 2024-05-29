@@ -29,7 +29,7 @@ export default function Sidebar({ user, token }) {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`${config.apiServer}/users/${user.user.username}/communities`)
+      .get(`${config.apiServer}/users/${user.user.username}/communities`, {withCredentials: true})
       .then((res) => {
         setUserCommunities(res.data.data);
         console.log(res.data.data);

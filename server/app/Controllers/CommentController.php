@@ -23,12 +23,12 @@ class CommentController
         $data = Request::getInputData();
         switch ($method) {
             case 'POST':
-                $csrf = Request::getHeader('X-CSRF-TOKEN');
-                // $validate = Validator::csrfValidate($csrf);
-                // if (!$validate) {
-                //     Response::send(403, 'Forbidden');
-                //     exit;
-                // }
+                $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
+                $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                if (!$validate) {
+                    Response::send(403, 'Forbidden');
+                    exit;
+                }
                 if (empty($data['postId']) || empty($data['content'])) {
                     Response::send(400, 'Missing data');
                     exit;

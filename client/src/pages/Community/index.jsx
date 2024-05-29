@@ -39,7 +39,7 @@ export default function CommunityPage() {
     const sessionId = cookies.get("sessionId");
     axios
       .get(
-        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&communityName=${params.community_name}`
+        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&communityName=${params.community_name}`, {withCredentials: true}
       )
       .then((res) => {
         setPosts(res.data.data.posts);

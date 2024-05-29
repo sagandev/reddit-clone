@@ -57,7 +57,7 @@ export default function SubmitPage() {
     const userS = JSON.parse(localStorage.getItem("user"));
     if (userS) setUser(userS);
     axios
-      .get(`${config.apiServer}/users/${userS.user.username}/communities`)
+      .get(`${config.apiServer}/users/${userS.user.username}/communities`, {withCredentials: true})
       .then((res) => {
         setCommunities(res.data.data);
         console.log(res.data.data);

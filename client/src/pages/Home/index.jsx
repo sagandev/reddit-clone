@@ -41,7 +41,7 @@ export default function HomePage() {
     const sessionId = cookies.get("sessionId");
 
     axios
-      .get(`${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}`)
+      .get(`${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}`, {withCredentials: true})
       .then((res) => {
         setPosts(res.data.data.posts);
         setPostsCount(res.data.data.posts.length);
@@ -54,7 +54,7 @@ export default function HomePage() {
       });
 
     axios
-      .get(`${config.apiServer}/communities`)
+      .get(`${config.apiServer}/communities`, {withCredentials: true})
       .then((res) => {
         setCommunities(res.data.data);
         console.log(res.data.data)
@@ -78,7 +78,7 @@ export default function HomePage() {
     console.log(postsCount);
     axios
       .get(
-        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&fromPost=${postsCount}`
+        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&fromPost=${postsCount}`, {withCredentials: true}
       )
       .then((res) => {
         setPosts([...posts, ...res.data.data.posts]);

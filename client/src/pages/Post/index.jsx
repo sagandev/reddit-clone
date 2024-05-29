@@ -69,6 +69,7 @@ export default function PostPage() {
     }
     axios
       .get(`${config.apiServer}/posts/${params.post_id}`, {
+        withCredentials: true,
         headers: auth ? { Authorization: "Bearer " + auth } : null,
       })
       .then((res) => {
@@ -78,7 +79,7 @@ export default function PostPage() {
         console.log(res.data.data);
         axios
           .get(
-            `${config.apiServer}/communities/${res.data.data.post.community_name}`
+            `${config.apiServer}/communities/${res.data.data.post.community_name}`, {withCredentials: true}
           )
           .then((res) => {
             setCommunity(res.data.data);
