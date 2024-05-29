@@ -4,3 +4,4 @@ vendor
 node_modules
 server/phpredis
 client/.env
+.env
