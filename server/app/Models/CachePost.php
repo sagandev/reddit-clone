@@ -3,22 +3,31 @@
 namespace App\Models;
 
 require __DIR__ . '/../../vendor/autoload.php';
+use Dotenv\Dotenv;
 
+$dotenv = Dotenv::createImmutable(__DIR__ . "/../../");
+$dotenv->load();
 use Redis;
 
 class CachePost
 {
-    public $hostname;
+    public $host;
     public $password;
     public $redis;
 
     public function __construct()
     {
+        $this->host = $_ENV['REDIS_HOST'];
+        $this->password = $_ENV['REDIS_PASSWORD'];
 
+        $this->init();
+    }
+
+    public function init()
+    {
         $this->redis = new Redis();
-
-        $this->redis->connect('127.0.0.1', 6379);
-        $this->redis->auth('8L7nc1iOi1XU96u156');
+        $this->redis->connect($this->host, 6379);
+        $this->redis->auth($this->password);
     }
 
     public function insert($sessionId, $data)

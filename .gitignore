@@ -3,3 +3,4 @@ client/node_modules
 vendor
 node_modules
 server/phpredis
+client/.env

@@ -78,7 +78,7 @@ export default function PostPage() {
         console.log(res.data.data);
         axios
           .get(
-            `${config.apiServer}/communities/${res.data.data.post.community_id}`
+            `${config.apiServer}/communities/${res.data.data.post.community_name}`
           )
           .then((res) => {
             setCommunity(res.data.data);

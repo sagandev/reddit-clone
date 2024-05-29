@@ -105,7 +105,7 @@ export default function CommunityPage() {
                 <Flex direction="row" gap={5}>
                   <Avatar
                     src={`${config.cdn}${
-                      community.icon ? "/communities/" + community.icon : "/community.png"
+                      community.icon ? "/communities/" + community.icon : "/communities/community.png"
                     }`}
                     size="xl"
                     style={{ transform: "translate3d(+25%, -50%, 0)" }}

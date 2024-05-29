@@ -40,11 +40,11 @@ class Community
         return $data;
     }
 
-    public function getCommunity(string $communityId): ?array
+    public function getCommunity(string $communityName): ?array
     {
 
         try {
-            $this->db->prepare("SELECT communities.*, (SELECT COUNT(*) FROM communities_members WHERE community_id = communities.id) AS members_count, users.username AS owner_name FROM communities INNER JOIN users ON communities.owner = users.id WHERE communities.id = :communityId", [':communityId' => $communityId]);
+            $this->db->prepare("SELECT communities.*, (SELECT COUNT(*) FROM communities_members WHERE community_id = communities.id) AS members_count, users.username AS owner_name FROM communities INNER JOIN users ON communities.owner = users.id WHERE communities.name = :communityName", [':communityName' => $communityName]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -54,7 +54,7 @@ class Community
         }
 
         $community = $this->db->fetchAssoc();
-
+        $communityId = $community['id'];
         try {
             $this->db->prepare("SELECT users.id, users.username FROM communities_members INNER JOIN users ON user_id = users.id WHERE community_id = :communityId AND role = 'mod'", [':communityId' => $communityId]);
             $this->db->execute();
