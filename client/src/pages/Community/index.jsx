@@ -117,7 +117,7 @@ export default function CommunityPage() {
                   <Text fw="bold" size="xl">
                     r/{params.community_name}
                   </Text>
-                  {user && community.community?.owner == user.user.id ? <Button radius="lg" style={{marginLeft: "auto"}} onClick={() => navigate(`/r/${community.community.name}/edit`)}>Edit</Button> : null}
+                  {user && community.community?.owner == user.user?.id ? <Button radius="lg" style={{marginLeft: "auto"}} onClick={() => navigate(`/r/${community.community.name}/edit`)}>Edit</Button> : null}
                 </Flex>
               </Flex>
               <Divider pb={10} />

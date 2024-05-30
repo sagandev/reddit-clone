@@ -173,7 +173,7 @@ export default function Navbar({
           )}
           <Menu shadow="md" width={200}>
             <Menu.Target>
-              <Button variant="transparent" hiddenFrom="sm">
+              <Button variant="transparent" hiddenFrom="sm" px={2}>
                 <IconDots></IconDots>
               </Button>
             </Menu.Target>

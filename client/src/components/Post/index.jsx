@@ -20,7 +20,7 @@ import {
   IconLink,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import config from  "../../config";
+import config from "../../config";
 export default function PostBox({ post }) {
   const navigate = useNavigate();
   const clipboard = useClipboard({ timeout: 500 });
@@ -28,56 +28,74 @@ export default function PostBox({ post }) {
     <>
       <Flex shadow="xs" direction="row" justify="space-between">
         <Flex direction="column" gap={5} w="100%">
-          <Flex direction="column" gap={5} style={{ cursor: "pointer" }}>
-            <Group>
-              <Avatar
-                component="a"
-                target="_blank"
-                alt="it's me"
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate(`/r/${post.community_name}`)}
-                src={config.cdn + "/communities/" + post.community_icon}
-              />
-              <Group
-                gap="xs"
+          <Flex
+            direction="row"
+            gap={5}
+            style={{ cursor: "pointer" }}
+            justify="space-between"
+            wrap="wrap"
+          >
+            <Flex direction="column" gap={5} style={{flex: 1}}>
+              <Group>
+                <Avatar
+                  component="a"
+                  target="_blank"
+                  alt="it's me"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/r/${post.community_name}`)}
+                  src={config.cdn + "/communities/" + post.community_icon}
+                />
+                <Group
+                  gap="xs"
+                  onClick={() =>
+                    navigate(`/r/${post.community_name}/${post.id}`)
+                  }
+                >
+                  <Text>r/{post.community_name}</Text>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon icon-tabler icon-tabler-point-filled"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="#000000"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path
+                      d="M12 7a5 5 0 1 1 -4.995 5.217l-.005 -.217l.005 -.217a5 5 0 0 1 4.995 -4.783z"
+                      strokeWidth="0"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  <Text size="xs">{post.timestamp}</Text>
+                  {post.nsfw ? <Badge color="red">NSFW</Badge> : null}
+                </Group>
+              </Group>
+              <Text
+                fw={700}
+                size="xl"
                 onClick={() => navigate(`/r/${post.community_name}/${post.id}`)}
               >
-                <Text>r/{post.community_name}</Text>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon icon-tabler icon-tabler-point-filled"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="#000000"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path
-                    d="M12 7a5 5 0 1 1 -4.995 5.217l-.005 -.217l.005 -.217a5 5 0 0 1 4.995 -4.783z"
-                    strokeWidth="0"
-                    fill="currentColor"
-                  />
-                </svg>
-                <Text size="xs">{post.timestamp}</Text>
-                {post.nsfw ? <Badge color="red">NSFW</Badge> : null}
-              </Group>
-            </Group>
-            <Text
-              fw={700}
-              size="xl"
-              onClick={() => navigate(`/r/${post.community_name}/${post.id}`)}
-            >
-              {post.title}
-            </Text>
-            <Text
-              onClick={() => navigate(`/r/${post.community_name}/${post.id}`)}
-            >
-              {post.content}
-            </Text>
+                {post.title}
+              </Text>
+              <Text
+                onClick={() => navigate(`/r/${post.community_name}/${post.id}`)}
+              >
+                {post.content}
+              </Text>
+            </Flex>
+            {post.imagePath ? (
+              <Image
+                radius="md"
+                src={`${config.cdn}/posts/${post.imagePath}`}
+                w={200}
+                style={{ filter: post.nsfw ? "blur(7px)" : null}}
+              />
+            ) : null}
           </Flex>
           <Flex
             justify="flex-start"
@@ -160,14 +178,6 @@ export default function PostBox({ post }) {
             </Group>
           </Flex>
         </Flex>
-        {post.imagePath ? (
-          <Image
-            radius="md"
-            src={`${config.cdn}/posts/${post.imagePath}`}
-            w={200}
-            style={{ filter: post.nsfw ? "blur(7px)" : null }}
-          />
-        ) : null}
       </Flex>
       <Divider my="sm" />
     </>
