@@ -18,6 +18,7 @@ import { useEffect } from 'react';
 import { getCsrfToken } from './api';
 import SetPasswordPage from './pages/SetNewPassword';
 import ActivateAccountPage from './pages/ActivateAccount';
+import CommunitySettingsPage from './pages/CommunitySettings';
 import axios from 'axios';
 export default function App() {
   const cookies = new Cookies();
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/recovery" element={<RecoveryPage/>}/>
           <Route path="/set-password" element={<SetPasswordPage/>}/>
           <Route path="/activate-account" element={<ActivateAccountPage/>}/>
+          <Route path="/r/:community_name/edit" element={<CommunitySettingsPage/>}/>
           <Route path="*" element={<NotFound/>} />
         </Routes>
       </BrowserRouter>

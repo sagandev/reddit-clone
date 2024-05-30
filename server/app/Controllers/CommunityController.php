@@ -82,12 +82,57 @@ class CommunityController
 
                     $join = $this->community->join($data['communityId'], $user->sub->userId);
 
-                    if(!$join) {
+                    if (!$join) {
                         Response::send($this->community->httpStatus, $this->community->error);
                         exit;
                     }
 
                     Response::send(200, "OK");
+                } elseif ($params['path'][2] == "edit") {
+                    if (!array_key_exists(3, $params['path'])) {
+                        if (empty($data['name']) || empty($data['description']) || empty($data['nsfw']) || empty($data['communityId'])) {
+                            Response::send(400, "Missing parameters");
+                            exit;
+                        }
+                        var_dump($data);
+
+                        $edit = $this->community->edit($data['name'], $data['description'], $data['nsfw'], $user->sub->userId, $data['communityId']);
+
+                        if (!$edit) {
+                            Response::send($this->community->httpStatus, $this->community->error);
+                            exit;
+                        }
+
+                        Response::send(200, "OK");
+                    } elseif ($params['path'][3] == "icon") {
+                        if (!array_key_exists('file', $data['files'])) {
+                            Response::send(400, "Missing parameters");
+                            exit;
+                        }
+
+                        $path = "/communities/";
+                        $upload = new File($path, $data['files']['file'], $data['input']['oldFileName']);
+
+                        if (!$upload) {
+                            Response::send($upload->httpStatus, $upload->error);
+                            exit;
+                        }
+
+                        $fileName = $upload->name;
+
+                        $editIcon = $this->community->editIcon($fileName, $user->sub->userId, $data['input']['communityId']);
+
+                        if (!$editIcon) {
+                            Response::send($this->community->httpStatus, $this->community->error);
+                            exit;
+                        }
+
+                        Response::send(200, "OK");
+                    } else {
+                        Response::send(404, "Not Found");
+                    }
+                } else {
+                    Response::send(404, "Not Found");
                 }
                 break;
             default:

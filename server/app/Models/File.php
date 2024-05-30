@@ -7,10 +7,10 @@ class File
     public $error = "";
     public $httpStatus = 200;
     public $name = "";
-    public function __construct(string $dir, array $file, string $oldFile = null)
+    public function __construct(string $dir, array $file, string|null $oldFileName = null)
     {
-        if($oldFile) {
-            $this->delete($dir, $oldFile);
+        if(!is_null($oldFileName) && $oldFileName != "null") {
+            $this->delete($dir, $oldFileName);
         }
         $this->move($dir, $file);
     }
@@ -61,7 +61,7 @@ class File
         return $newName;
     }
 
-    public function delete(string $dir, string $oldFileName) {
+    public function delete(string $dir, string|null $oldFileName) {
         if (!unlink( __DIR__ .'/../../storage'.$dir.$oldFileName)) {
             $this->error = "An unexpected error occured while deleting old file.";
             $this->httpStatus = 500;

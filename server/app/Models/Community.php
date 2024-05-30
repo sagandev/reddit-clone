@@ -159,4 +159,72 @@ class Community
 
         return true;
     }
+
+    public function edit(string $name, string $description, string|bool $nsfw, string $userId, string $communityId)
+    {
+        try {
+            $this->db->prepare("SELECT communities.* FROM communities WHERE communities.id = :communityId AND owner = :userId", [':communityId' => $communityId, ':userId' => $userId]);
+            $this->db->execute();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        if ($this->db->numRows() == 0) {
+            $this->httpStatus = 404;
+            $this->error = "Community not found";
+            return false;
+        }
+
+        $community = $this->db->fetchAssoc();
+
+        if ($community['name'] != $name) {
+            try {
+                $this->db->prepare("SELECT communities.name FROM communities WHERE communities.name = :communityName", [':communityName' => $name]);
+                $this->db->execute();
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
+            }
+
+            if ($this->db->numRows() != 0) {
+                $this->httpStatus = 400;
+                $this->error = "Community with this name already exists";
+                return false;
+            }
+        }
+
+
+        try {
+            $this->db->prepare("UPDATE communities SET name = :name, description = :description, nsfw = :nsfw WHERE communities.id = :communityId AND owner = :userId", [':name' => $name, ':description' => $description, ':nsfw' => $nsfw, ':communityId' => $communityId, ':userId' => $userId]);
+            $this->db->execute();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        return true;
+    }
+
+    public function editIcon(string $iconName, string $userId, string $communityId)
+    {
+        try {
+            $this->db->prepare("SELECT communities.name FROM communities WHERE communities.id = :communityId AND owner = :userId", [':communityId' => $communityId, ':userId' => $userId]);
+            $this->db->execute();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        if ($this->db->numRows() == 0) {
+            $this->httpStatus = 404;
+            $this->error = "Community not found";
+            return false;
+        }
+
+        try {
+            $this->db->prepare("UPDATE communities SET icon = :iconName WHERE communities.id = :communityId AND owner = :userId", [':iconName' => $iconName, ':communityId' => $communityId, ':userId' => $userId]);
+            $this->db->execute();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        return true;
+    }
 }

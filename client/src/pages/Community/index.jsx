@@ -16,7 +16,7 @@ import {
   Avatar,
   Divider,
 } from "@mantine/core";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Login from "../../components/Login";
 import Signup from "../../components/Signup";
 import PostBox from "../../components/Post";
@@ -31,10 +31,11 @@ export default function CommunityPage() {
   const [openedSignup, toggleSignup] = useState(false);
   const [posts, setPosts] = useState([]);
   const [isLogged, setIsLogged] = useState(false);
-  const [user, setUser] = useState();
+  const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(true);
   const [community, setCommunity] = useState([]);
   const cookies = new Cookies();
+  const navigate = useNavigate();
   useEffect(() => {
     const sessionId = cookies.get("sessionId");
     axios
@@ -105,18 +106,18 @@ export default function CommunityPage() {
                 <Flex direction="row" gap={5}>
                   <Avatar
                     src={`${config.cdn}${
-                      community.icon ? "/communities/" + community.icon : "/communities/community.png"
+                      !!community.community?.icon ? "/communities/" + community.community.icon : "/communities/community.png"
                     }`}
                     size="xl"
                     style={{ transform: "translate3d(+25%, -50%, 0)" }}
                     mr={30}
                   >
-                    MK
+                    CM
                   </Avatar>
                   <Text fw="bold" size="xl">
                     r/{params.community_name}
                   </Text>
-                  {/*<Button variant="outline" color="gray" radius="lg" style={{marginLeft: "auto"}}>Create post</Button>*/}
+                  {user && community.community?.owner == user.user.id ? <Button radius="lg" style={{marginLeft: "auto"}} onClick={() => navigate(`/r/${community.community.name}/edit`)}>Edit</Button> : null}
                 </Flex>
               </Flex>
               <Divider pb={10} />
