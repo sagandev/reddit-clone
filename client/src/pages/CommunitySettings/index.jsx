@@ -239,8 +239,8 @@ export default function UserSettings() {
             />
           </AppShell.Header>
           <AppShell.Main>
-            <Container size="lg" style={{ width: "70vh", borderRadius: "var(--mantine-radius-lg)" }} bg="dark" p={20}>
-              <Flex direction="column" gap={10}>
+            <Container size="lg">
+              <Flex direction="column" gap={10} style={{ borderRadius: "var(--mantine-radius-lg)" }} bg="dark" p={20}>
                 <form
                   onSubmit={form.onSubmit((values) => handleSubmit(values))}
                 >

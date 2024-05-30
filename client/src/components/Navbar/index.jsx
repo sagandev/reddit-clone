@@ -19,17 +19,18 @@ import {
   IconPlus,
   IconToolsKitchen2,
   IconUser,
+  IconLogin2,
 } from "@tabler/icons-react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
-import config from  "../../config";
+import config from "../../config";
 export default function Navbar({
   isLogged,
   openedLogin,
   toggleLogin,
   openedSignup,
   toggleSignup,
-  user
+  user,
 }) {
   const cookies = new Cookies();
   const navigate = useNavigate();
@@ -39,7 +40,9 @@ export default function Navbar({
   const [searchData, setSearchData] = useState([]);
   const sendReq = () => {
     axios
-      .get(`${config.apiServer}/communities?search=${search}`, {withCredentials: true})
+      .get(`${config.apiServer}/communities?search=${search}`, {
+        withCredentials: true,
+      })
       .then((res) => {
         console.log(res.data.data);
         const data = res.data.data;
@@ -65,21 +68,20 @@ export default function Navbar({
   };
   const handleLogout = () => {
     cookies.remove("auth");
-    console.log(cookies)
+    console.log(cookies);
     window.location.reload();
   };
   return (
     <>
       <Flex h="100%" px="md" justify="space-between" align="center" gap="10">
-        <Box
-          visibleFrom="md"
-          onClick={() => navigate("/")}
-          style={{ cursor: "pointer" }}
-        >
-          <Text fw="bold" size="xl">
+        <Flex onClick={() => navigate("/")} style={{ cursor: "pointer" }} align="center">
+          <Text fw="bold" size="xl" visibleFrom="md">
             <IconToolsKitchen2 /> Reddish
           </Text>
-        </Box>
+          <Text hiddenFrom="md">
+            <IconToolsKitchen2 />
+          </Text>
+        </Flex>
         <Autocomplete
           placeholder="Search"
           leftSection={
@@ -113,16 +115,18 @@ export default function Navbar({
               </Button>
               <Menu shadow="md" width={200}>
                 <Menu.Target>
-                  <Avatar radius="xl" src={config.cdn + "/users/" + user.user.avatar} style={{ cursor: "pointer" }} />
+                  <Avatar
+                    radius="xl"
+                    src={config.cdn + "/users/" + user.user.avatar}
+                    style={{ cursor: "pointer" }}
+                  />
                 </Menu.Target>
 
                 <Menu.Dropdown>
                   <Menu.Label>User</Menu.Label>
                   <Menu.Item
                     leftSection={
-                      <IconUser
-                        style={{ width: rem(14), height: rem(14) }}
-                      />
+                      <IconUser style={{ width: rem(14), height: rem(14) }} />
                     }
                     onClick={() => navigate(`/user/${user.user.username}`)}
                   >
@@ -175,14 +179,25 @@ export default function Navbar({
             </Menu.Target>
 
             <Menu.Dropdown>
-              <Menu.Item
-                leftSection={
-                  <IconPlus style={{ width: rem(14), height: rem(14) }} />
-                }
-                onClick={() => navigate("/submit")}
-              >
-                Create
-              </Menu.Item>
+              {isLogged ? (
+                <Menu.Item
+                  leftSection={
+                    <IconPlus style={{ width: rem(14), height: rem(14) }} />
+                  }
+                  onClick={() => navigate("/submit")}
+                >
+                  Create
+                </Menu.Item>
+              ) : (
+                <Menu.Item
+                  onClick={() => toggleSignup(!openedSignup)}
+                  leftSection={
+                    <IconLogin2 style={{ width: rem(14), height: rem(14) }} />
+                  }
+                >
+                  Sign Up
+                </Menu.Item>
+              )}
             </Menu.Dropdown>
           </Menu>
         </Group>
