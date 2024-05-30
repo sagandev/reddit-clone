@@ -37,10 +37,9 @@ export default function CommunityPage() {
   const cookies = new Cookies();
   const navigate = useNavigate();
   useEffect(() => {
-    const sessionId = cookies.get("sessionId");
     axios
       .get(
-        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&communityName=${params.community_name}`, {withCredentials: true}
+        `${config.apiServer}/posts?sort=created_at&communityName=${params.community_name}`, {withCredentials: true}
       )
       .then((res) => {
         setPosts(res.data.data.posts);
@@ -106,13 +105,12 @@ export default function CommunityPage() {
                 <Flex direction="row" gap={5}>
                   <Avatar
                     src={`${config.cdn}${
-                      !!community.community?.icon ? "/communities/" + community.community.icon : "/communities/community.png"
+                      !!community.community?.icon ? "/communities/" + community.community.icon : null
                     }`}
                     size="xl"
                     style={{ transform: "translate3d(+25%, -50%, 0)" }}
                     mr={30}
                   >
-                    CM
                   </Avatar>
                   <Text fw="bold" size="xl">
                     r/{params.community_name}

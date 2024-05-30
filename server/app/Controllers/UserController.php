@@ -30,11 +30,14 @@ class UserController
     {
         $method = Request::getMethod();
         $data = Request::getInputData();
+
+        Validator::checkIfTokenExists();
+
         switch ($method) {
             case 'POST':
                 $params = Request::getURI();
                 $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
-                $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                $validate = Validator::csrfValidate($csrf);
                 if (!$validate) {
                     Response::send(403, 'Forbidden');
                     exit;

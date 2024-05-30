@@ -24,6 +24,8 @@ class CommunityController
         $method = Request::getMethod();
         $data = Request::getInputData();
 
+        Validator::checkIfTokenExists();
+
         switch ($method) {
             case 'GET':
                 $params = Request::getURI();
@@ -44,7 +46,7 @@ class CommunityController
             case 'POST':
                 $params = Request::getURI();
                 $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
-                $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                $validate = Validator::csrfValidate($csrf);
                 if (!$validate) {
                     Response::send(403, 'Forbidden');
                     exit;

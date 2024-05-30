@@ -67,9 +67,9 @@ export default function Navbar({
     timeout();
   };
   const handleLogout = () => {
-    cookies.remove("auth");
-    console.log(cookies);
-    window.location.reload();
+    axios.post(`${config.apiServer}/auth/logout`, {withCredentials: true}).then((res) => {
+      window.location.reload();
+    })
   };
   return (
     <>

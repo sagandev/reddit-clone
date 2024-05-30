@@ -37,10 +37,9 @@ export default function UserPage() {
   const [opened, { toggle }] = useDisclosure();
   const cookies = new Cookies();
   useEffect(() => {
-    const sessionId = cookies.get("sessionId");
     axios
       .get(
-        `${config.apiServer}/posts?sort=created_at&sessionId=${sessionId}&userName=${params.username}`, {withCredentials: true}
+        `${config.apiServer}/posts?sort=created_at&userName=${params.username}`, {withCredentials: true}
       )
       .then((res) => {
         setPosts(res.data.data.posts);

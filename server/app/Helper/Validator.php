@@ -6,10 +6,9 @@ namespace App\Helper;
 
 class Validator
 {
-    public static function csrfValidate(string $sessionToken, string $csrfToken): bool|string
+    public static function csrfValidate(string $csrfToken): bool
     {
-
-        if (!hash_equals($sessionToken, $csrfToken)) {
+        if (!hash_equals($_SESSION['csrfToken'], $csrfToken)) {
             return false;
         }
 
@@ -24,6 +23,16 @@ class Validator
 
     public static function checkIfTokenExists(): bool
     {
-        return isset($_SESSION['csrfToken']) ? true : false;
+        if(!isset($_SESSION['csrfToken'])) {
+            $token = self::generateToken();
+            setcookie("CSRF_TOKEN", $token, ['path' => '/', 'samesite' => 'strict']);
+            $_SESSION['csrfToken'] = $token;
+            return true;
+        }
+
+        if(!isset($_COOKIE['CSRF_TOKEN'])){
+            setcookie("CSRF_TOKEN", $_SESSION['csrfToken'], ['path' => '/', 'samesite' => 'strict']);
+        }
+        return true;
     }
 }

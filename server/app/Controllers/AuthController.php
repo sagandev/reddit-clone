@@ -27,16 +27,13 @@ class AuthController
         $method = Request::getMethod();
         $data = Request::getInputData();
 
+        Validator::checkIfTokenExists();
+
         switch ($method) {
             case 'POST':
                 $params = Request::getURI();
                 if (array_key_exists(2, $params['path'])) {
                     switch ($params['path'][2]) {
-                        case 'token':
-                            $token = Validator::generateToken();
-                            $_SESSION['csrfToken'] = $token;
-                            Response::send(200, "OK", $token);
-                            break;
                         case 'password-recovery':
                             if (empty($data['email'])) {
                                 Response::send(400, 'Missing parameters');
@@ -58,13 +55,23 @@ class AuthController
 
                             Response::send(200, "OK");
                             break;
+                        case 'logout':
+                            if (!isset($_COOKIE['auth'])) {
+                                Response::send(400, "Not logged");
+                                exit;
+                            }
+
+                            unset($_COOKIE['auth']);
+                            setcookie('auth', '', ['expires' => -1, 'path' => '/']);
+                            Response::send(200, "OK");
+                            break;
                         default:
                             Response::send(404, 'Not found');
                             break;
                     }
                 } else {
                     $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
-                    $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                    $validate = Validator::csrfValidate($csrf);
                     if (!$validate) {
                         Response::send(403, 'Forbidden');
                         exit;
@@ -81,7 +88,8 @@ class AuthController
                         exit;
                     }
                     $token = $this->auth->createToken(['email' => $data['email'], 'userId' => $user['id']]);
-                    Response::send(200, 'Successfully logged in', ['token' => $token, 'user' => $user]);
+                    setcookie('auth', $token, ['expires' => time() + 3600 * 12, 'path' => '/', 'samesite' => 'Strict']);
+                    Response::send(200, 'Successfully logged in', ['user' => $user]);
                 }
                 break;
 

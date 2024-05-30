@@ -27,6 +27,8 @@ class PostController
         $method = Request::getMethod();
         $data = Request::getInputData();
 
+        Validator::checkIfTokenExists();
+
         switch ($method) {
             case 'GET':
                 $params = Request::getURI();
@@ -34,12 +36,13 @@ class PostController
                 if(!array_key_exists(2, $params['path'])) {
                     $sort = $params['query']['sort'] ?? "upvotes";
                     if (isset($params['query']['sort'])) {
-                        if (empty($params['query']['sessionId']) || $params['query']['sessionId'] == "undefined"){
+                        if (!isset($_COOKIE['sessionId'])){
                             $sessionId = md5(rand() . microtime() . str_shuffle($_ENV['SESSION_ID_SECRET']));
+                            setcookie("sessionId", $sessionId, ['path' => '/']);
                         } else {
-                            $sessionId = $params['query']['sessionId'];
+                            $sessionId = $_COOKIE['sessionId'];
                         }
-                        $data = ['posts' => [], 'sessionId' => $sessionId];
+                        $data = ['posts' => []];
                         if (isset($params['query']['communityName'])) {
                             $posts = $this->post->getPosts($sort, $params['query']['communityName']);
                             $data['posts'] = $posts;
@@ -89,7 +92,7 @@ class PostController
             case 'POST':
                 $params = Request::getURI();
                 $csrf = Request::getHeader('HTTP_X_CSRF_TOKEN');
-                $validate = Validator::csrfValidate($_SESSION['csrfToken'], $csrf);
+                $validate = Validator::csrfValidate($csrf);
                 if (!$validate) {
                     Response::send(403, 'Forbidden');
                     exit;

@@ -65,10 +65,10 @@ export default function LoginForm({ toggleLogin, openedLogin }) {
             icon: <IconX />,
           });
         } else {
-          cookies.set("auth", res.data.data.token, {
-            expires: new Date(new Date().getTime() + 12 * 60 * 60 * 1000),
-            path: "/",
-          });
+          // cookies.set("auth", res.data.data.token, {
+          //   expires: new Date(new Date().getTime() + 12 * 60 * 60 * 1000),
+          //   path: "/",
+          // });
           localStorage.setItem("user", JSON.stringify(res.data.data));
           notifications.show({
             title: "Login successfully",

@@ -13,25 +13,15 @@ import NotFound from "./pages/NotFound";
 import RecoveryPage from "./pages/RecoveryPage";
 import '@mantine/notifications/styles.css';
 import { Notifications } from '@mantine/notifications';
-import { Cookies, CookiesProvider } from 'react-cookie';
+import { CookiesProvider } from 'react-cookie';
 import { useEffect } from 'react';
-import { getCsrfToken } from './api';
 import SetPasswordPage from './pages/SetNewPassword';
 import ActivateAccountPage from './pages/ActivateAccount';
 import CommunitySettingsPage from './pages/CommunitySettings';
 import axios from 'axios';
 export default function App() {
-  const cookies = new Cookies();
   useEffect(() => {
     axios.defaults.withCredentials = true;
-    const token = cookies.get("CSRF_TOKEN");
-    if (!token) {
-      const newToken = getCsrfToken().then(({data}) => {
-        console.log(data)
-       cookies.set("CSRF_TOKEN", data.data)
-      });
-
-    }
   })
   return (
     <MantineProvider defaultColorScheme='dark'>

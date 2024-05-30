@@ -63,7 +63,7 @@ export default function PostPageBox({ post, isLogged }) {
   const handleDownvote = () => {
     const auth = cookies.get("auth");
     if (!auth) return;
-    const token = localStorage.getItem("csrf_token");
+    const token = cookies.get("CSRF_TOKEN");
     axios.post(
       `${config.apiServer}/posts/downvote`,
       {
@@ -97,11 +97,11 @@ export default function PostPageBox({ post, isLogged }) {
             component="a"
             target="_blank"
             src={`${config.cdn}${
-              post.avatar ? "/users/" + post.avatar : "/Default_avatar_profile.jpg"
+              post.community_icon ? "/communities/" + post.community_icon : null
             }`}
             alt="it's me"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/user/${post.author}`)}
+            onClick={() => navigate(`/r/${post.community_name}`)}
           />
           <Stack gap={0}>
             <Group gap="xs">
