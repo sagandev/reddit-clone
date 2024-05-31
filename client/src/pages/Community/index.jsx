@@ -24,7 +24,7 @@ import CommunitySmallCard from "../../components/Community";
 import Navbar from "../../components/Navbar";
 import { Cookies } from "react-cookie";
 import Loading from "../../components/Loading";
-import config from  "../../config";
+import config from "../../config";
 export default function CommunityPage() {
   const params = useParams();
   const [openedLogin, toggleLogin] = useState(false);
@@ -39,14 +39,13 @@ export default function CommunityPage() {
   useEffect(() => {
     axios
       .get(
-        `${config.apiServer}/posts?sort=created_at&communityName=${params.community_name}`, {withCredentials: true}
+        `${config.apiServer}/posts?sort=created_at&communityName=${params.community_name}`,
+        { withCredentials: true }
       )
       .then((res) => {
         setPosts(res.data.data.posts);
         axios
-          .get(
-            `${config.apiServer}/communities/${params.community_name}`
-          )
+          .get(`${config.apiServer}/communities/${params.community_name}`)
           .then((res) => {
             setCommunity(res.data.data);
             console.log(res.data.data);
@@ -97,25 +96,36 @@ export default function CommunityPage() {
           <AppShell.Main>
             <Container size="lg" px={0}>
               <Flex direction="column" h={300} gap={5}>
-                <Image
-                  radius="md"
+                <Box
+                  style={{ borderRadius: "var(--mantine-radius-lg)" }}
                   h={200}
-                  src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-10.png"
+                  bg="dark"
                 />
                 <Flex direction="row" gap={5}>
                   <Avatar
                     src={`${config.cdn}${
-                      !!community.community?.icon ? "/communities/" + community.community.icon : null
+                      !!community.community?.icon
+                        ? "/communities/" + community.community.icon
+                        : null
                     }`}
                     size="xl"
                     style={{ transform: "translate3d(+25%, -50%, 0)" }}
                     mr={30}
-                  >
-                  </Avatar>
+                  ></Avatar>
                   <Text fw="bold" size="xl">
                     r/{params.community_name}
                   </Text>
-                  {user && community.community?.owner == user.user?.id ? <Button radius="lg" style={{marginLeft: "auto"}} onClick={() => navigate(`/r/${community.community.name}/edit`)}>Edit</Button> : null}
+                  {user && community.community?.owner == user.user?.id ? (
+                    <Button
+                      radius="lg"
+                      style={{ marginLeft: "auto" }}
+                      onClick={() =>
+                        navigate(`/r/${community.community.name}/edit`)
+                      }
+                    >
+                      Edit
+                    </Button>
+                  ) : null}
                 </Flex>
               </Flex>
               <Divider pb={10} />

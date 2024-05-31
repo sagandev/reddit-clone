@@ -102,18 +102,23 @@ export default function UserPage() {
               user={userLocal}
             />
           </AppShell.Header>
-          {user  && isLogged ? <Sidebar user={userLocal} /> : null}
+          {user && isLogged ? <Sidebar user={userLocal} /> : null}
           <AppShell.Main>
             {user?.username ? (
               <>
                 <Container size="lg" px={0}>
-                  <Flex direction="row" wrap="wrap" gap={20} style={{alignItems: "flex-start"}}>
-                    <Flex direction="column" style={{flex: 1}}>
+                  <Flex
+                    direction="row"
+                    wrap="wrap"
+                    gap={20}
+                    style={{ alignItems: "flex-start" }}
+                  >
+                    <Flex direction="column" style={{ flex: 1 }}>
                       <Flex direction="column" h={300} gap={5}>
-                        <Image
-                          radius="md"
+                        <Box
+                          style={{ borderRadius: "var(--mantine-radius-lg)" }}
                           h={200}
-                          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-10.png"
+                          bg="dark"
                         />
                         <Flex direction="row" gap={5}>
                           <Avatar

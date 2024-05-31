@@ -34,6 +34,9 @@ export default function PostBox({ post }) {
             style={{ cursor: "pointer" }}
             justify="space-between"
             wrap="wrap"
+            onClick={() =>
+              navigate(`/r/${post.community_name}/${post.id}`)
+            }
           >
             <Flex direction="column" gap={5}>
               <Group>
@@ -47,9 +50,6 @@ export default function PostBox({ post }) {
                 />
                 <Group
                   gap="xs"
-                  onClick={() =>
-                    navigate(`/r/${post.community_name}/${post.id}`)
-                  }
                 >
                   <Text>r/{post.community_name}</Text>
                   <svg
