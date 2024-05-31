@@ -114,6 +114,21 @@ class UserController
                                 $this->user->updateAvatar($user->sub->userId, $newName);
                                 Response::send(200, 'success', $newName);
                                 break;
+                            case "details":
+                                if (!isset($data['display_name']) && !isset($data['about'])){
+                                    Response::send(400, "Missing parameters");
+                                    exit;
+                                }
+
+                                $editDetails = $this->user->updateDetails($data['display_name'],$data['about'], $user->sub->userId);
+
+                                if(!$editDetails) {
+                                    Response::send($this->user->httpStatus, $this->user->error);
+                                    exit;
+                                }
+
+                                Response::send(200, "OK");
+                                break;
                             default:
                                 Response::send(404, 'Not found');
                                 break;

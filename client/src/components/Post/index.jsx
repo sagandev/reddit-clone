@@ -35,7 +35,7 @@ export default function PostBox({ post }) {
             justify="space-between"
             wrap="wrap"
           >
-            <Flex direction="column" gap={5} style={{flex: 1}}>
+            <Flex direction="column" gap={5}>
               <Group>
                 <Avatar
                   component="a"
@@ -92,7 +92,7 @@ export default function PostBox({ post }) {
               <Image
                 radius="md"
                 src={`${config.cdn}/posts/${post.imagePath}`}
-                w={200}
+                w={220}
                 style={{ filter: post.nsfw ? "blur(7px)" : null}}
               />
             ) : null}

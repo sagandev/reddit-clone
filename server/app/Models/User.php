@@ -358,4 +358,29 @@ class User
 
         return true;
     }
+
+    public function updateDetails(string|null $displayName, string|null $about, string $userId): bool
+    {
+        try {
+            $this->db->prepare("SELECT * FROM users_details WHERE user_id = :userId", [':userId' => $userId]);
+            $this->db->execute();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        if($this->db->numRows() == 0) {
+            $this->httpStatus = 404;
+            $this->error = "Can't find user";
+            return false;
+        }
+
+        try {
+            $this->db->prepare("UPDATE users_details SET display_name = :displayName, about = :about WHERE user_id = :userId", [':displayName' => $displayName, ':about' => $about, ':userId' => $userId]);
+            $this->db->execute();
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        return true;
+    }
 }

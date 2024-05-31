@@ -24,7 +24,7 @@ import UserCard from "../../components/UserCard";
 import { Cookies } from "react-cookie";
 import Loading from "../../components/Loading";
 import Sidebar from "../../components/Sidebar";
-import config from  "../../config";
+import config from "../../config";
 export default function UserPage() {
   const params = useParams();
   const [openedLogin, toggleLogin] = useState(false);
@@ -39,7 +39,8 @@ export default function UserPage() {
   useEffect(() => {
     axios
       .get(
-        `${config.apiServer}/posts?sort=created_at&userName=${params.username}`, {withCredentials: true}
+        `${config.apiServer}/posts?sort=created_at&userName=${params.username}`,
+        { withCredentials: true }
       )
       .then((res) => {
         setPosts(res.data.data.posts);
@@ -54,7 +55,6 @@ export default function UserPage() {
       setIsLogged(true);
     }
     const user = localStorage.getItem("user") ?? null;
-    console.log(JSON.parse(user));
     if (user) setUserLocal(JSON.parse(user));
   }, []);
   if (loading) {
@@ -83,11 +83,15 @@ export default function UserPage() {
         <AppShell
           header={{ height: 60 }}
           padding="md"
-          navbar={userLocal ? {
-            width: 250,
-            breakpoint: "sm",
-            collapsed: { mobile: !opened },
-          }:null}
+          navbar={
+            userLocal
+              ? {
+                  width: 250,
+                  breakpoint: "sm",
+                  collapsed: { mobile: !opened },
+                }
+              : null
+          }
         >
           <AppShell.Header>
             <Navbar
@@ -104,54 +108,58 @@ export default function UserPage() {
             {user?.username ? (
               <>
                 <Container size="lg" px={0}>
-                  <Flex direction="column" h={300} gap={5}>
-                    <Image
-                      radius="md"
-                      h={200}
-                      src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-10.png"
-                    />
-                    <Flex direction="row" gap={5}>
-                      <Avatar
-                        src={`${config.cdn}${
-                          user.avatar
-                            ? "/users/" + user.avatar
-                            : "/Default_avatar_profile.jpg"
-                        }`}
-                        size="xl"
-                        style={{ transform: "translate3d(+25%, -50%, 0)" }}
-                        mr={30}
-                      >
-                        MK
-                      </Avatar>
-                      <Text fw="bold" size="xl">
-                        u/{params.username}
-                      </Text>
-                      {user.id == userLocal.id ? (
-                        <Button
-                          variant="outline"
-                          color="gray"
-                          radius="lg"
-                          style={{ marginLeft: "auto" }}
-                        >
-                          Edit profile
-                        </Button>
-                      ) : null}
+                  <Flex direction="row" wrap="wrap" gap={20} style={{alignItems: "flex-start"}}>
+                    <Flex direction="column" style={{flex: 1}}>
+                      <Flex direction="column" h={300} gap={5}>
+                        <Image
+                          radius="md"
+                          h={200}
+                          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-10.png"
+                        />
+                        <Flex direction="row" gap={5}>
+                          <Avatar
+                            src={`${config.cdn}${
+                              user.avatar
+                                ? "/users/" + user.avatar
+                                : "/Default_avatar_profile.jpg"
+                            }`}
+                            size="xl"
+                            style={{ transform: "translate3d(+25%, -50%, 0)" }}
+                            mr={30}
+                          >
+                            MK
+                          </Avatar>
+                          <Text fw="bold" size="xl">
+                            u/{params.username}
+                          </Text>
+                          {user.id == userLocal.id ? (
+                            <Button
+                              variant="outline"
+                              color="gray"
+                              radius="lg"
+                              style={{ marginLeft: "auto" }}
+                            >
+                              Edit profile
+                            </Button>
+                          ) : null}
+                        </Flex>
+                      </Flex>
+                      <Divider pb={10} />
+                      <Grid>
+                        <Grid.Col span="auto">
+                          {posts ? (
+                            posts.map((el, i) => {
+                              return <PostBox post={el} key={i} />;
+                            })
+                          ) : (
+                            <Text>No post has been added yet...</Text>
+                          )}
+                          <Center></Center>
+                        </Grid.Col>
+                      </Grid>
                     </Flex>
+                    <UserCard user={user} />
                   </Flex>
-                  <Divider pb={10} />
-                  <Grid>
-                    <Grid.Col span="auto">
-                      {posts ? (
-                        posts.map((el, i) => {
-                          return <PostBox post={el} key={i} />;
-                        })
-                      ) : (
-                        <Text>No post has been added yet...</Text>
-                      )}
-                      <Center></Center>
-                    </Grid.Col>
-                  </Grid>
-                  <UserCard user={user} />
                 </Container>
               </>
             ) : (
