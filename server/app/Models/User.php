@@ -69,8 +69,10 @@ class User
         $password = password_hash($password, PASSWORD_DEFAULT);
 
 
+        $date = date("Y/m/d");
+
         try {
-            $this->db->prepare("INSERT INTO users (email, username, password) VALUES (:email, :username, :password);", [':email' => $email, ':username' => $username, ':password' => $password]);
+            $this->db->prepare("INSERT INTO users (email, username, password, created_at) VALUES (:email, :username, :password, :date);", [':email' => $email, ':username' => $username, ':password' => $password, ':date' => $date]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
@@ -110,7 +112,7 @@ class User
         $username = DataFormatter::string($username);
 
         try {
-            $this->db->prepare("SELECT u.id, username, followers, karma, avatar, banner, display_name, about FROM users AS u INNER JOIN users_stats AS us ON us.user_id = u.id INNER JOIN users_details AS ud ON ud.user_id = u.id WHERE username = :username", [':username' => $username]);
+            $this->db->prepare("SELECT u.id, username, followers, karma, avatar, banner, display_name, created_at, about, (SELECT COUNT(*) FROM posts WHERE posts.author_id = u.id) AS posts_count, (SELECT COUNT(*) FROM posts_comments WHERE posts_comments.author_id = u.id) AS comments_count FROM users AS u INNER JOIN users_stats AS us ON us.user_id = u.id INNER JOIN users_details AS ud ON ud.user_id = u.id WHERE username = :username", [':username' => $username]);
             $this->db->execute();
         } catch (Exception $e) {
             throw new Exception($e->getMessage());

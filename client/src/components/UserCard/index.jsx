@@ -49,7 +49,7 @@ export default function UserCard({ user }) {
             tristique mauris in sapien gravida pharetra. Sed et ante sit amet
             augue facilisis vehicula ut sed nibh.{" "}
           </Text>
-          <CopyButton value="https://mantine.dev">
+          <CopyButton value={`${config.apiServer}/user/${user.username}`}>
             {({ copied, copy }) => (
               <Button
                 color={copied ? "blue" : "gray"}
@@ -66,25 +66,25 @@ export default function UserCard({ user }) {
         </Flex>
         <Flex direction="row" wrap="wrap" gap={10} justify="space-between">
           <Flex direction="column">
-            <Text>1</Text>
+            <Text>{user.posts_count}</Text>
             <Text c="dimmed">Posts</Text>
           </Flex>
           <Flex direction="column">
-            <Text>1</Text>
+            <Text>{user.comments_count}</Text>
             <Text c="dimmed">Comments</Text>
           </Flex>
           <Flex direction="column">
-            <Text>1</Text>
+            <Text>{user.created_at}</Text>
             <Text c="dimmed">Cake day</Text>
           </Flex>
         </Flex>
         <Flex direction="row" wrap="wrap" gap={35}>
           <Flex direction="column">
-            <Text>1</Text>
+            <Text>{user.karma}</Text>
             <Text c="dimmed">Karma</Text>
           </Flex>
           <Flex direction="column">
-            <Text>1</Text>
+            <Text>{user.followers}</Text>
             <Text c="dimmed">Followers</Text>
           </Flex>
         </Flex>
