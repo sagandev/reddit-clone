@@ -47,7 +47,6 @@ export default function UserPage() {
       });
     axios.get(`${config.apiServer}/users/${params.username}`).then((res) => {
       setUser(res.data.data);
-      console.log(res.data.data);
       setLoading(false);
     });
     const auth = cookies.get("auth");
@@ -103,7 +102,7 @@ export default function UserPage() {
               user={userLocal}
             />
           </AppShell.Header>
-          {user ? <Sidebar user={userLocal} /> : null}
+          {user  && isLogged ? <Sidebar user={userLocal} /> : null}
           <AppShell.Main>
             {user?.username ? (
               <>

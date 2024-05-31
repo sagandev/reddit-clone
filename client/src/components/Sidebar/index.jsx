@@ -28,13 +28,14 @@ export default function Sidebar({ user, token }) {
   const cookies = new Cookies();
   const navigate = useNavigate();
   useEffect(() => {
+    if(user.user){
     axios
       .get(`${config.apiServer}/users/${user.user.username}/communities`, {withCredentials: true})
       .then((res) => {
         setUserCommunities(res.data.data);
         console.log(res.data.data);
       });
-    userCommunities.map((val) => console.log(val.name));
+    }
   }, []);
 
   const form = useForm({
