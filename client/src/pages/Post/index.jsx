@@ -224,7 +224,7 @@ export default function PostPage() {
               <Grid>
                 <Grid.Col span="auto">
                   {post.post ? (
-                    <PostPageBox post={post.post} isLogged={isLogged} />
+                    <PostPageBox post={post.post} isLogged={isLogged} user={user}/>
                   ) : (
                     <Loader color="blue" type="dots" />
                   )}

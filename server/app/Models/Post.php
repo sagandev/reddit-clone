@@ -74,9 +74,9 @@ class Post
         ];
 
         if (!$userId) {
-            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, posts.created_at, username AS author, avatar, communities.name AS community_name, communities.id AS community_id, communities.icon AS community_icon, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id INNER JOIN users_details ON users.id = users_details.user_id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.id = :postId";
+            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, posts.created_at, username AS author, posts.author_id, avatar, communities.name AS community_name, communities.id AS community_id, communities.icon AS community_icon, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id INNER JOIN users_details ON users.id = users_details.user_id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.id = :postId";
         } else {
-            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, posts.created_at, username AS author, avatar, communities.name AS community_name, communities.id AS community_id, communities.icon AS community_icon, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, (SELECT COUNT(*) FROM posts_upvotes WHERE post_id = :postId AND user_id = :userId) AS userUpvote, (SELECT COUNT(*) FROM posts_downvotes WHERE post_id = :postId AND user_id = :userId) As userDownvote FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id INNER JOIN users_details ON users.id = users_details.user_id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.id = :postId";
+            $sql = "SELECT posts.id, title, content, imagePath, posts.nsfw, posts.created_at, username AS author, posts.author_id, avatar, communities.name AS community_name, communities.id AS community_id, communities.icon AS community_icon, COUNT(posts_upvotes.post_id) AS upvotes, COUNT(posts_downvotes.post_id) AS downvotes, (SELECT COUNT(*) FROM posts_upvotes WHERE post_id = :postId AND user_id = :userId) AS userUpvote, (SELECT COUNT(*) FROM posts_downvotes WHERE post_id = :postId AND user_id = :userId) As userDownvote FROM posts INNER JOIN users ON posts.author_id = users.id INNER JOIN communities ON posts.community_id = communities.id INNER JOIN users_details ON users.id = users_details.user_id LEFT JOIN posts_upvotes ON posts.id = posts_upvotes.post_id LEFT JOIN posts_downvotes ON posts.id = posts_downvotes.post_id WHERE posts.id = :postId";
         }
 
         try {
@@ -141,8 +141,9 @@ class Post
     
     public function deletePost(string $postId, string $userId): bool
     {
+        $postIdDecoded = implode($this->sqids->decode($postId));
         try {
-            $this->db->prepare("DELETE FROM posts WHERE posts.id = :postId AND author_id = :userId", [':postId' => $postId, ':userId' => $userId]);
+            $this->db->prepare("DELETE FROM posts WHERE posts.id = :postId AND author_id = :userId", [':postId' => $postIdDecoded, ':userId' => $userId]);
             $this->db->execute();
         } catch (Exception $e) {
             $this->error = $e;
